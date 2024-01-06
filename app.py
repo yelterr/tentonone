@@ -75,6 +75,7 @@ def get_random_image(gender_choice):
         print("WTF How did you choose that gender lmao???")
 
 # Writes a line to temp_ratings.txt or updates an existing line
+# TEMPORARY SOLUTION UNTIL SQL
 def write_line(filename, rating):
     line_written = False
     text_doc = "temp_ratings.txt"
@@ -102,6 +103,7 @@ def write_line(filename, rating):
             text.write(new_line)
 
 # Extracts the current data from a line (returns filename, amt_raters, rating)
+# TEMPORARY SOLUTION UNTIL SQL
 def line_extract(line):
     line = line.replace("\n", "")
     split_line = line.split()
@@ -111,6 +113,7 @@ def line_extract(line):
     return filename, amt_raters, rating
 
 # Gets the rating of the current image
+# TEMPORARY SOLUTION UNTIL SQL
 def get_current_rating(filename):
     text_doc = "temp_ratings.txt"
     with open(text_doc, "r") as text:
