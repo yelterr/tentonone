@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Hot Or Not</title>
+</head>
+<body>
+    <!-- <h1>Welcome to Hot or Not</h1> -->
+
+    <div style="text-align: center; margin-top: 50px;">
+        <h1>Hot or Not</h1>
+        <!-- <a href="{{ url_for('start_game') }}"><button>Play</button></a> -->
+        <button id="startButton" onclick="startGame()">Play</button>
+        <a id="leaderboard_button" href="{{ url_for('leaderboard') }}"><button>Leaderboard</button></a>
+    </div>
+
+    <div>
+        {% include 'dropdown.html' %}
+    </div>
+    
+    <script src="../static/script.js" defer></script>
+</body>
+</html>

@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hot or Not Leaderboard</title>
+</head>
+<body>
+    <h1>Leaderboard</h1>
+    <ul id="leaderboard_list"></ul>
+
+    <script>
+        var ratings = {{ lines | tojson | safe }};
+        var leaderboard = document.getElementById("leaderboard_list")
+
+        for (let i = 0, len = ratings.length; i < len; i++) {
+            const listItem = document.createElement("li");
+            listItem.textContent = ratings[i]
+            leaderboard.appendChild(listItem)
+        }
+    </script>
+</body>
+</html>
