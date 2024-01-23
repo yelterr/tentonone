@@ -1,5 +1,0 @@
-affleck.jpg 42 4.2
-shakira.jpg 31 4.4
-musk.jpg 42 3.9
-thatcher.jpg 44 4.6
-rufallo.jpg 1 6.4

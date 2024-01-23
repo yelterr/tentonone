@@ -6,18 +6,21 @@
     <title>Hot or Not Leaderboard</title>
 </head>
 <body>
+    {% include 'navbar.html' %}
+
     <h1>Leaderboard</h1>
     <ul id="leaderboard_list"></ul>
 
-    <script>
-        var ratings = {{ lines | tojson | safe }};
-        var leaderboard = document.getElementById("leaderboard_list")
+    <select id="filterDropdown" onchange="makeFilterDropdownChanges()" style="position: fixed; top: 10px; left: 10px;">
+        <!-- The option elements define the individual items in the dropdown -->
+        <option value="h2l">Highest to Lowest</option>
+        <option value="l2h">Lowest to Highest</option>
+    </select>
 
-        for (let i = 0, len = ratings.length; i < len; i++) {
-            const listItem = document.createElement("li");
-            listItem.textContent = ratings[i]
-            leaderboard.appendChild(listItem)
-        }
-    </script>
+    {% include 'footer.html' %}
+    {% include 'dropdown.html' %}
+
+    
+    <script src="../static/script.js" defer></script>
 </body>
 </html>

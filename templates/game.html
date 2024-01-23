@@ -4,13 +4,54 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Hot or Not</title>
+
+    <style>
+        .img-container {
+            padding: 0;
+            margin: 0;
+            display: inline-block;
+            position: relative;
+        }
+
+        .overlay-text {
+            position: absolute;
+            bottom: 10px;
+            left: 18px;
+            color: white;
+            font-family: Roboto, sans-serif;
+            font-size: 50px;
+            font-weight: bold;
+            text-align: left;
+
+            margin: 0;
+            padding: 0;
+        }
+        
+        .img-gradient-overlay {
+            position: absolute;
+            top: 70%;
+            left: 0;
+            width: 100%;
+            height: 30%;
+            background: linear-gradient(to top, rgb(0, 0, 0), rgba(0, 0, 0, 0));
+            opacity: .8;
+            border-radius: 5px;
+        }
+    </style>
+
 </head>
 <body>
     <!-- This is the game page. -->
 
+    {% include 'navbar.html' %}
+
     <div style="text-align: center; margin-top: 50px;">
         <h1>Rate this Person:</h1>
-        <img id="loadedImage" src="{{ random_image }}" alt="Random Image">
+        <div class="img-container">
+            <img id="loadedImage" style="border-radius: 5px;" src="{{ random_image }}" alt="Random Image">
+            <div class="img-gradient-overlay"></div>
+            <p class="overlay-text" id="name-overlay">Person's Name</p>
+        </div>
     </div>
 
     <div class="slidecontainer" style="text-align: center; margin-top: 50px;">
@@ -19,11 +60,25 @@
 
         <div id="avg_div" style="display:none;"><p>Average Rating: <span id="avg_rating"></span></p></div>
 
-        <button id="gameButton" onclick="showAndRemoveNext()">Submit</button>
+        <button id="gameButton" class="gradient-button" onclick="showAndRemoveNext()">Submit</button>
     </div>
 
     {% include 'dropdown.html' %}
-    <a href="{{ url_for('index') }}" style="position: fixed; top: 10px; left: 10px;"><button>Main Menu</button></a>
+    {% include 'footer.html' %}
+
+
+    <script>
+        document.getElementById("name-overlay").innerText = "{{ name }}"
+
+        // Gets the value of the rating slider (game.html)
+        var slider = document.getElementById("rating_slider");
+        var output = document.getElementById("slider_value");
+        output.innerHTML = slider.value;
+
+        slider.oninput = function() {
+        output.innerHTML = this.value;
+        }
+    </script>
 
     <script src="../static/script.js" defer></script>
 </body>

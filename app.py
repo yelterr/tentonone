@@ -2,10 +2,17 @@ from flask import Flask, render_template, redirect, url_for, send_from_directory
 import os
 import pathlib
 import random
+from oursql import credentials, create_db_connection, add_row, get_current_rating, get_all_average_ratings
+
+# TODO - Delete this when you implement the name retrieval from the name table
+import numpy as np
 
 app = Flask(__name__)
 gender_choice = "both"
+last_image = None
 
+db = "hotornot"
+db_connection = create_db_connection(credentials.host, credentials.username, credentials.passwd, db)
 
 # Loads the main menu
 @app.route('/')
@@ -16,23 +23,31 @@ def index():
 @app.route('/game')
 def start_game():
     random_image = get_random_image(gender_choice)
-    return render_template("game.html", random_image=random_image)
+    
+    filename = extract_filename(random_image)
+    name = get_name(filename)
+
+    global last_image
+    last_image = filename
+
+    return render_template("game.html", random_image=random_image, name=name)
 
 @app.route("/leaderboard")
 def leaderboard():
-    text_doc = "temp_ratings.txt"
-    with open(text_doc, "r") as text:
-        lines = text.readlines()
-
-    lines = [line_extract(line) for line in lines]
-
-    return render_template("leaderboard.html", lines=lines)
+    return render_template("leaderboard.html")
 
 # Provides the Javascript function with a random image
 @app.route("/get_image")
 def get_image():
     image_path = get_random_image(gender_choice)
-    return jsonify(result=image_path)
+    global last_image
+    last_image = extract_filename(image_path)
+
+    name = get_name(last_image)
+
+    result = {"impath" : image_path, "name" : name}
+
+    return jsonify(result=result)
 
 # Recieves the rating from the submit button
 @app.route("/send_rating", methods=["POST"])
@@ -40,14 +55,17 @@ def send_rating():
     data = request.get_json()
 
     link = data["image_path"]
+    print(link)
     filename = link[::-1][:link[::-1].index("/")][::-1]
 
     rating = float(data["slider_value"])
-    rating_before = get_current_rating(filename)
+    add_row(db_connection, filename, rating)
+    rating_now = get_current_rating(db_connection, filename)
 
-    write_line(filename, rating)
+    if rating_now == -1:
+        rating_now = "[Error, please report this to us]"
 
-    return jsonify(result=str(rating_before))
+    return jsonify(result=str(rating_now))
 
 # Updates the gender_choice variable
 @app.route("/update_gender_choice", methods=["POST"])
@@ -59,74 +77,75 @@ def update_gender_choice():
 
 # Retrieves a random image path from the images directory
 def get_random_image(gender_choice):
-    if gender_choice == "both":
-        all_images = list(pathlib.Path("static/images/").glob("*/*.jpg"))
-        random_impath = random.choice(all_images)
-        return str(random_impath)
-    elif gender_choice == "men":
+    if gender_choice == "men":
         all_men_images = list(pathlib.Path("static/images/").glob("men/*.jpg"))
         random_impath = random.choice(all_men_images)
-        return str(random_impath)
+        chosen_image = str(random_impath)
     elif gender_choice == "women":
         all_women_images = list(pathlib.Path("static/images/").glob("women/*.jpg"))
         random_impath = random.choice(all_women_images)
-        return str(random_impath)
+        chosen_image = str(random_impath)
+    else: # When gender_choice == "both" or any other circumstance
+        all_images = list(pathlib.Path("static/images/").glob("*/*.jpg"))
+        random_impath = random.choice(all_images)
+        chosen_image = str(random_impath)
+
+    # Making sure that the new image is not the same as the last image (rare, but just in case)
+    just_filename = extract_filename(chosen_image)
+    while just_filename == last_image:
+        print(f"Filename: {just_filename}")
+        print(f"Last Image: {last_image}")
+        chosen_image = get_random_image(gender_choice)
+        just_filename = extract_filename(chosen_image)
+
+    return chosen_image
+
+def get_filtered_lines(filter="h2l"):
+    ratings = get_all_average_ratings(db_connection)
+
+    # Sorting by highest to lowest or reverse
+    if filter == "h2l":
+        ratings = sorted(ratings, key=(lambda x : x[2]))[::-1]
+    elif filter == "l2h":
+        ratings = sorted(ratings, key=(lambda x : x[2]))
+
+    # Filtering for gender
+    final_ratings = []
+    if gender_choice == "both":
+        return ratings
     else:
-        print("WTF How did you choose that gender lmao???")
+        all_men_images = list(pathlib.Path("static/images/").glob("men/*.jpg"))
+        all_women_images = list(pathlib.Path("static/images/").glob("women/*.jpg"))
 
-# Writes a line to temp_ratings.txt or updates an existing line
-# TEMPORARY SOLUTION UNTIL SQL
-def write_line(filename, rating):
-    line_written = False
-    text_doc = "temp_ratings.txt"
+        if gender_choice == "men":
+            for rating in ratings:
+                if any(rating[0] in str(s) for s in all_men_images):
+                    final_ratings.append(rating)
 
-    with open(text_doc, "r+") as text:
-        lines = text.readlines()
-        for i, line in enumerate(lines):
-            if filename in line:
-                line_written = True
-                _, amt_raters, old_rating = line_extract(line)
-                new_rating = round(((old_rating * amt_raters + rating) / (amt_raters + 1)), 1)
+        elif gender_choice == "women":
+            for rating in ratings:
+                if any(rating[0] in str(s) for s in all_women_images):
+                    final_ratings.append(rating)
 
-                new_line = filename + " " + str(amt_raters + 1) + " " + str(new_rating) + "\n"
-                lines[i] = new_line
 
-                text.seek(0)
-                text.truncate()
-                text.writelines(lines)
+    return final_ratings
 
-                break
+def extract_filename(filepath):
+    return filepath[::-1][:filepath[::-1].index("/")][::-1]
 
-    if not line_written:
-        with open(text_doc, "a") as text:
-            new_line = filename + " 1 " + str(rating) + "\n"
-            text.write(new_line)
+# TODO - Implement the actual gathering of names from the name table
+def get_name(filename):
+    name = np.random.choice(["Joao Pereira", "Johnny Depp", "Margaret Thatcher", "Charles Bukowski"])
+    return name
 
-# Extracts the current data from a line (returns filename, amt_raters, rating)
-# TEMPORARY SOLUTION UNTIL SQL
-def line_extract(line):
-    line = line.replace("\n", "")
-    split_line = line.split()
-    filename = split_line[0]
-    amt_raters = int(split_line[1])
-    rating = float(split_line[2])
-    return filename, amt_raters, rating
+@app.route("/retrieve_ratings", methods=["POST"])
+def retrieve_the_ratings():
+    data = request.get_json()
+    filter = data["filterChoice"]
+    
 
-# Gets the rating of the current image
-# TEMPORARY SOLUTION UNTIL SQL
-def get_current_rating(filename):
-    text_doc = "temp_ratings.txt"
-    with open(text_doc, "r") as text:
-        lines = text.readlines()
-        for line in lines:
-            potential_filename, _, rating = line_extract(line)
-            if filename == potential_filename:
-                return rating
-            else:
-                continue
-
-        return "You are first to rate this person!"
-
+    ratings = get_filtered_lines(filter)
+    return jsonify(result=ratings)
 
 if __name__ == '__main__':
     app.run(debug=True)
