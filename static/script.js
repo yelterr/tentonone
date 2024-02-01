@@ -1,11 +1,11 @@
 // Starts the rating from a button
 function startGame() {
     updateGenderChoice();
-    fetch('/game')
+    fetch('/rate')
         .then(response => {
             if (response.ok) {
                 // If the response is successful, navigate to the new page
-                window.location.href = '/game';
+                window.location.href = '/rate';
             } else {
                 console.error('Failed to invoke Python function');
             }
@@ -26,37 +26,81 @@ function loadImage() {
             // Set the image source dynamically
             document.getElementById('loadedImage').src = url;
             document.getElementById('name-overlay').innerText = name;
+            document.getElementById("name-bottom").innerText = name
+            document.getElementById("name_result").innerText = name
         });
 }
 
 // Handles the "next" page when a user submits.
 function showAndRemoveNext() {
-    var button = document.getElementById("gameButton")
-    var avg_rating = document.getElementById("avg_div")
+    var button = document.getElementById("gameButton");
+    var submit_div = document.getElementById("submit_div");
+    var results_div = document.getElementById("results_div");
+
+    var slider = document.getElementById("rating_slider");
+    var textInput = document.getElementById("textInput");
 
     // Changes Button Text
     if (button.innerText === "Submit") {
-        // TODO - Change this to whatever makes the screen next
-        sendRating();
-        button.innerText = "Next"
-        avg_rating.style.display = "block"
+        makeNext();
     } else {
-        // TODO - Change this to whatever makes the screen submit
-        updateGenderChoice();
-        loadImage();
-        button.innerText = "Submit"
-        avg_rating.style.display = "none"
+        makeSubmit();
     }
+}
 
+// TODO - Change this to whatever makes the screen submit
+function makeSubmit() {
+    var button = document.getElementById("gameButton")
+    var leaderboard_button = document.getElementById("leaderboard-button");
+    var submit_div = document.getElementById("submit_div")
+    var results_div = document.getElementById("results_div")
 
+    var slider = document.getElementById("rating_slider");
+    var textInput = document.getElementById("textInput");
+    
+    updateGenderChoice();
+    loadImage();
+    button.innerText = "Submit"
+    slider.value = 5
+    textInput.value = 5
+    results_div.style.display = "none"
+    submit_div.style.display = "block"
+    leaderboard_button.style.display = "none"
+
+    slider.disabled = false;
+    textInput.disabled = false;
+}
+
+// TODO - Change this to whatever makes the screen next
+function makeNext() {
+    sendRating();
+
+    var button = document.getElementById("gameButton");
+    var leaderboard_button = document.getElementById("leaderboard-button");
+    var submit_div = document.getElementById("submit_div");
+    var results_div = document.getElementById("results_div");
+
+    var slider = document.getElementById("rating_slider");
+    var textInput = document.getElementById("textInput");
+
+    button.innerText = "Next"
+    submit_div.style.display = "none"
+    results_div.style.display = "block"
+    leaderboard_button.style.display = "block"
+
+    slider.disabled = true;
+    textInput.disabled = true;
 }
 
 // Sends the value of the slider and image path to backend.py (game.html)
 function sendRating() {
-    var avg_rating = document.getElementById("avg_rating")
     var imagePath = document.getElementById("loadedImage").src;
     var sliderValue = document.getElementById("rating_slider").value;
     var genderChoice = localStorage.getItem("selectedOption");
+
+    var avg_rating_txt = document.getElementById("avg_rating")
+    var amt_raters_txt = document.getElementById("amt_raters")
+    var ranking_txt = document.getElementById("ranking")
 
     // Make an AJAX request to send the slider value to the server
     fetch('/send_rating', {
@@ -69,8 +113,13 @@ function sendRating() {
     .then(response => response.json())
     .then(data => {
         // Changes the avg_rating text to the actual average rating
-        const rating = data.result
-        avg_rating.innerText = rating
+        const rating = data.result.rating
+        const amt_raters = data.result.amt_raters
+        const ranking = data.result.ranking
+
+        avg_rating_txt.innerText = rating
+        amt_raters_txt.innerText = amt_raters
+        ranking_txt.innerText = "#" + ranking
     });
 
 }
@@ -79,13 +128,16 @@ function sendRating() {
 function saveSelectedOption() {
     var dropdown = document.getElementById("myDropdown");
     var selectedValue = dropdown.value;
+
+    const choices = ["both", "men", "women"]
+    if (!choices.includes(selectedValue)) {
+        selectedValue = "both";
+    }
+
     localStorage.setItem("selectedOption", selectedValue);
 }
 
 window.onload = function () {
-    saveSelectedOption();
-    updateGenderChoice();
-
     var currentPath = window.location.pathname;
     if (currentPath == "/leaderboard") {
         makeFilterDropdownChanges();
@@ -93,10 +145,12 @@ window.onload = function () {
 
     var dropdown = document.getElementById("myDropdown");
     var selectedValue = localStorage.getItem("selectedOption")
+    const choices = ["both", "men", "women"]
 
-    if (!selectedValue) {
+    if (!selectedValue || !choices.includes(selectedValue)) {
         selectedValue = "both";
         localStorage.setItem("selectedOption", selectedValue);
+        updateGenderChoice();
     }
 
     dropdown.value = selectedValue;
@@ -104,6 +158,12 @@ window.onload = function () {
 
 function updateGenderChoice() {
     var genderChoice = localStorage.getItem("selectedOption");
+
+    const choices = ["both", "men", "women"]
+    if (!choices.includes(genderChoice)) {
+        genderChoice = "both";
+        localStorage.setItem("selectedOption", genderChoice);
+    }
 
     fetch('/update_gender_choice', {
         method: 'POST',
@@ -126,7 +186,7 @@ function makeGenderDropdownChanges() {
     var currentPath = window.location.pathname;
 
     // If we are in game
-    if (currentPath == "/game") {
+    if (currentPath == "/rate") {
         var impath = document.getElementById("loadedImage").src
     
         // Check if an image change is needed
@@ -136,23 +196,13 @@ function makeGenderDropdownChanges() {
         else if (dropdownValue == "women") {
             if (!(impath.includes("/women"))) {
                 loadImage();
-
-                // TODO - CHANGE THIS TO WHATEVER YOU NEED TO MAKE THE NEXT SCREEN THE SUBMIT SCREEN
-                var button = document.getElementById("gameButton");
-                var avg_rating = document.getElementById("avg_div");
-                button.innerText = "Submit"
-                avg_rating.style.display = "none"
+                makeSubmit();
             }
         }
         else if (dropdownValue == "men") {
             if (!(impath.includes("/men"))) {
                 loadImage();
-
-                // TODO - CHANGE THIS TO WHATEVER YOU NEED TO MAKE THE NEXT SCREEN THE SUBMIT SCREEN
-                var button = document.getElementById("gameButton");
-                var avg_rating = document.getElementById("avg_div");
-                button.innerText = "Submit"
-                avg_rating.style.display = "none"
+                makeSubmit();
             }
         }
     }
@@ -169,17 +219,20 @@ function makeGenderDropdownChanges() {
 }
 
 function makeFilterDropdownChanges() {
+    updateGenderChoice();
+
     var filterChoice = document.getElementById("filterDropdown").value;
     var genderChoice = localStorage.getItem("selectedOption");
 
-    // Whenever you change the leaderboard to not bullets, you might have to change this
-    var leaderboard = document.getElementById("leaderboard_list");
+    
+    // NEW LEADERBOARD POPULATION
+    var leaderboard = document.getElementById("leaderboard-background")
     var children = leaderboard.children;
     var childrenArray = Array.from(children);
     childrenArray.forEach(function(child) {
         leaderboard.removeChild(child);
     });
-    
+
     fetch('/retrieve_ratings', {
         method: 'POST',
         headers: {
@@ -189,18 +242,62 @@ function makeFilterDropdownChanges() {
     })
     .then(response => response.json())
     .then(data => {
-        // Makes the leaderboard with a for loop through all the ratings
-        const ratings = data.result
+        // I need POSITION, NAME, RATING, AMT_RATERS, IMPATH
+        const rankings = data.result
 
-        var leaderboard = document.getElementById("leaderboard_list")
-        for (let i = 0, len = ratings.length; i < len; i++) {
-            const listItem = document.createElement("li");
-            listItem.textContent = ratings[i]
-            leaderboard.appendChild(listItem)
+        // (margaret_thatcher.jpg, 38, 7.99211, 1, Joao Pereira)
+        for (let i = 0, len = rankings.length; i < len; i++) {
+            var impath = rankings[i][0];
+            var amt_raters = rankings[i][1]
+            var rating = rankings[i][2]
+            var position = rankings[i][3]
+            var name = rankings[i][4]
+
+            const leaderboard_item = document.createElement("div");
+            leaderboard_item.className = "leaderboard-element"
+            leaderboard_item.innerHTML = `
+            <div class="position-div">
+                    <p class="position-txt">${position}</p>
+                </div>
+
+                <div class="not-position-div">
+                    <img class="leaderboard-img" src="${impath}">
+
+                    <div class="name-and-raters">
+                        <p class="name-txt" style="margin: 0; padding: 0;">${name}</p>
+                        <p style="margin: 0; padding: 0; font-size: 13px;">rated by ${amt_raters} people</p>
+                    </div>
+
+                    <div class="rating-div">
+                        <div class="has-the-numbers">
+                            <p class="number-txt" style="margin: 0; padding: 0;">${rating}</p>
+                            <p class="out-of-ten" style="margin-top: 3px; padding: 0;">/10</p>
+                        </div>
+                    </div>
+
+                </div>
+                `
+
+            leaderboard.appendChild(leaderboard_item)
         }
+
+        // Filtering the new leaderboard elements for anything already in the search bar
+        const searchTerm = searchInput.value.toLowerCase();
+        const elements = document.getElementsByClassName('leaderboard-element');
+
+        for (let i = 0; i < elements.length; i++) {
+            const elementText = elements[i].textContent.toLowerCase();
+
+            // Hide or show elements based on the search term
+            if (elementText.includes(searchTerm)) {
+                elements[i].style.display = 'flex';
+            } else {
+                elements[i].style.display = 'none';
+            }
+        }
+
     });
 
-    // On load in leaderboard.html, run this.
-    // This will create the leaderboard elements & change them when dropdown changes
-    // This way, I can use a python function to always make it correctly updated
+
+
 }

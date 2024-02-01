@@ -2,25 +2,395 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <link rel="icon" type="image/x-icon" href="../static/images/favicon.ico">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Hot or Not Leaderboard</title>
+    <title>Leaderboard – Ten to None</title>
+
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300;400&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Roboto+Condensed&display=swap');
+        
+        :root {
+            --width: 800px;
+            --width: 41%;
+            --minimum-width: 400px;
+        }
+        
+
+        @media screen and (max-width: 600px) {
+            .name-txt {
+                font-size: 18px; /* Adjust font size for smaller screens */
+            }
+            .number-txt {
+                font-size: 21px;
+            }
+            .name-and-raters {
+                left: 90px;
+            }
+            .has-the-numbers {
+                margin-right: 10px;
+            }
+            .position-txt {
+                font-size: 25px;
+            }
+            .out-of-ten {
+                font-size: 10px;
+            }
+            .leaderboard-background {
+                padding-right: 10px;
+                width: var(--width);
+                min-width: var(--minimum-width);
+            }
+            .dropdowns-div, .search-bar {
+                width: var(--width);
+                min-width: 410px;
+            }
+        }
+
+        @media screen and (min-width: 600px) and (max-width: 1300px) {
+            .name-txt {
+                font-size: 24px;
+            }
+            .number-txt {
+                font-size: 26px;
+            }
+            .name-and-raters {
+                left: 118.5px;
+            }
+            .has-the-numbers {
+                margin-right: 30px;
+            }
+            .position-txt {
+                font-size: 35px;
+            }
+            .out-of-ten {
+                font-size: 15px;
+            }
+            .leaderboard-background {
+                padding-right: 30px;
+                min-width: 550px;
+                width: var(--width);
+            }
+            .dropdowns-div, .search-bar {
+                width: var(--width);
+                min-width: 580px;
+            }
+        }
+
+        @media screen and (min-width: 1300px) {
+            .name-txt {
+                font-size: 30px;
+            }
+            .number-txt {
+                font-size: 35px;
+            }
+            .name-and-raters {
+                left: 118.5px;
+            }
+            .has-the-numbers {
+                margin-right: 30px;
+            }
+            .position-txt {
+                font-size: 40px;
+            }
+            .out-of-ten {
+                font-size: 15px;
+            }
+            .leaderboard-background {
+                padding-right: 30px;
+                min-width: 650px;
+                width: var(--width);
+            }
+            .dropdowns-div, .search-bar {
+                width: 42.4%;
+                min-width: 680px;
+            }
+        }
+
+
+        div {
+            padding: 0;
+            margin: 0;
+        }
+
+        .leaderboard-div {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .leaderboard-background {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+
+            padding-top: 20px;
+            padding-bottom: 20px;
+            /* padding-right: 30px; */
+            padding-left: 0px;
+
+            background: white;
+            box-shadow: 0 4px 10px 0 rgba(0, 0, 0, 0.3);
+            border-radius: 5px;
+
+            /*
+            width: var(--width);
+            min-width: var(--minimum-width);
+            */
+        }
+
+        .leaderboard-element {
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+
+            margin-top: 10px;
+            margin-bottom: 10px;
+
+            height: 15vw;
+            max-height: 100px;
+            width: 100%;
+            box-sizing: border-box;
+        }
+
+        .position-div {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            font-family: Roboto, sans-serif;
+            font-weight: 300;
+            color: #2E2E2E;
+
+            width: 15%;
+            max-width: 120px;
+            height: 100%;
+        }
+
+        .not-position-div {
+            height: 100%;
+            width: 100%;
+
+            border: 2px solid #E6E6E6;
+            border-radius: 5px;
+
+            position: relative;
+
+        }
+
+        .leaderboard-img {
+            border-bottom-left-radius: 5px;
+            border-top-left-radius: 5px;
+
+            height: 103.5%;
+            position: absolute;
+            top: -2px; /* Position from the top of the parent */
+            left: -2px; /* Position from the left of the parent */
+            bottom: -2px;
+        }
+
+        .name-and-raters {
+            display: flex;
+            flex-direction: column;
+            align-items: left;
+            justify-content: center;
+
+            height: 100%;
+            position: absolute;
+            
+
+            font-family: Roboto, sans-serif;
+            font-weight: 400;
+            color: #2E2E2E;
+        }
+
+        .rating-div {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+
+            position: absolute;
+            right: 0;
+            height: 100%;
+
+
+            color: #2E2E2E;
+            font-family: Roboto, sans-serif;
+            font-weight: 400;
+        }
+
+        .has-the-numbers {
+            display: flex;
+            flex-direction: row;
+            align-items: start;
+        }
+
+        .dropdowns-div {
+            display: flex;
+            align-items: left;
+
+            /* margin-top: 90px; */
+            margin-bottom: 10px;
+
+            /*
+            width: 42.4%;
+            min-width: var(--minimum-width);
+            */
+        }
+
+        .h2l-dropdown {
+            margin-left: 10px;
+
+            width: 225px;
+            font-family: Roboto, sans-serif;
+            font-size: 18px;
+            padding: 3.6px 7.2px;
+
+            display: grid;
+            grid-template-areas: "select";
+            align-items: center;
+            position: relative;
+
+            border: 1px solid #777;
+            background: white;
+            color: #2E2E2E;
+            box-shadow: none;
+            border-radius: 5px;
+        }
+
+        .h2l-dropdown:hover {
+            background: #E6E6E6;
+        }
+
+        .search-bar {
+            box-sizing: border-box;
+            font-family: Roboto, sans-serif;
+            font-size: 24px;
+            padding: 3.6px 7.2px;
+
+            border: 1px solid #777;
+            background: white;
+            box-shadow: none;
+            border-radius: 5px;
+
+            margin-bottom: 10px;
+        }
+
+        .search-bar:focus {
+            outline: 2px solid #FF0D0D;
+            box-shadow: 0 4px 10px 0 rgba(0, 0, 0, 0.3);
+        }
+
+        h1 {
+            font-family: Roboto Condensed, sans-serif;
+            color: #2E2E2E;
+            font-size: 50px;
+            margin: 0;
+            padding: 0;
+        }
+
+    </style>
+
 </head>
 <body>
     {% include 'navbar.html' %}
 
-    <h1>Leaderboard</h1>
-    <ul id="leaderboard_list"></ul>
+    <div style="display: flex; flex-direction: column; align-items: center; text-align: center; margin-bottom: 30px">
+        <h1>Attractiveness Rankings</h1>
+    </div>
+    
+    <div class="leaderboard-div">
 
-    <select id="filterDropdown" onchange="makeFilterDropdownChanges()" style="position: fixed; top: 10px; left: 10px;">
-        <!-- The option elements define the individual items in the dropdown -->
-        <option value="h2l">Highest to Lowest</option>
-        <option value="l2h">Lowest to Highest</option>
-    </select>
+        <div class="dropdowns-div">
+
+            {% include 'dropdown.html' %}
+
+            <!-- THE H2L DROPDOWN -->
+            <select id="filterDropdown" onchange="makeFilterDropdownChanges()" class="h2l-dropdown">
+                <option value="h2l">Highest to Lowest</option>
+                <option value="l2h">Lowest to Highest</option>
+            </select>
+
+        </div>
+
+        
+        <input type="text" id="searchInput" placeholder="Search..." class="search-bar">
+
+
+        <div id="leaderboard-background" class="leaderboard-background">
+
+            <ul id="leaderboard_list"></ul>
+
+
+            <!-- TODO - EASTER EGG?!?!??!!?!?!?? -->
+            <!-- This is what you have to add per line
+
+            <div class="leaderboard-element">
+
+                <div class="position-div">
+                    <p style="font-size: 40px;">99</p>
+                </div>
+
+                <div class="not-position-div">
+                    <img class="leaderboard-img" src="../static/images/men/elon_musk.jpg">
+
+                    <div class="name-and-raters">
+                        <p style="margin: 0; padding: 0; font-size: 30px;">Elon Musk</p>
+                        <p style="margin: 0; padding: 0; font-size: 13px;">rated by 1,234 people</p>
+                    </div>
+
+                    <div class="rating-div">
+                        <div class="has-the-numbers">
+                            <p style="margin: 0; padding: 0; font-size: 35px;">9.38</p>
+                            <p style="margin-top: 3px; padding: 0; font-size: 15px;">/10</p>
+                        </div>
+                    </div>
+
+                </div>
+
+            </div>
+
+            ====================================== -->
+
+        </div>
+    
+    </div>
 
     {% include 'footer.html' %}
-    {% include 'dropdown.html' %}
 
     
+
+    <script>
+
+        document.addEventListener('DOMContentLoaded', function () {
+            // Get references to the search input and the list of elements
+            const searchInput = document.getElementById('searchInput');
+            const searchList = document.getElementById('searchList');
+
+            // Add an event listener to the search input
+            searchInput.addEventListener('input', function () {
+                const searchTerm = searchInput.value.toLowerCase();
+                filterElements(searchTerm);
+            });
+            // Function to filter elements based on the search term
+            function filterElements(searchTerm) {
+                const elements = document.getElementsByClassName('leaderboard-element');
+
+                for (let i = 0; i < elements.length; i++) {
+                    const elementText = elements[i].textContent.toLowerCase();
+
+                    // Hide or show elements based on the search term
+                    if (elementText.includes(searchTerm)) {
+                        elements[i].style.display = 'flex';
+                    } else {
+                        elements[i].style.display = 'none';
+                    }
+                }
+            }
+        });
+
+    </script>
     <script src="../static/script.js" defer></script>
 </body>
 </html>

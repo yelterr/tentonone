@@ -3,14 +3,77 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Hot or Not</title>
+    <link rel="icon" type="image/x-icon" href="../static/images/favicon.ico">
+
+    <title>Rate People – Ten to None</title>
 
     <style>
+
+        :root {
+            --slider-height: 30px;
+            --disabled-color: gray;
+        }
+
+        .gradient-button {
+            color: white;
+            font-family: 'Roboto', sans-serif, Bold;
+            font-weight: 700;
+            background-color: #5F2AD0;
+            background-image: linear-gradient(to right, #5F2AD0, #FF0D0D);
+            font-size: 20px;
+
+            padding-top: 14px;
+            padding-bottom: 16px;
+            border-radius: 240px;
+            margin: 0;
+
+            width: 230px;
+            border: none;
+            transition: width 0.5s, background-image 4s ease-in-out;
+        }
+
+        .gradient-button:hover {
+            background-image: linear-gradient(to right, hsl(259, 66%, 55%), hsl(0, 100%, 59%));
+            /* width: 240px; */
+        }
+
+        .gradient-button:active {
+            background-image: linear-gradient(to right, hsl(259, 66%, 60%), hsl(0, 100%, 64%));
+            /* width: 240px; */
+            /* box-shadow: 0 2px #666;
+            transform: translateY(2px); */
+        }
+
+        .secondary-button {
+            color: #2E2E2E;
+            font-family: 'Roboto', sans-serif;
+            font-weight: 400;
+            background-color: #E6E6E6;
+            font-size: 20px;
+            padding-top: 14px;
+            padding-bottom: 16px;
+            border-radius: 240px;
+            width: 230px;
+            border: none;
+        }
+
+        .secondary-button:hover {
+            background-color: #d9d9d9;
+        }
+
+        .secondary-button:active {
+            background-color: #cccccc;
+        }
+
         .img-container {
             padding: 0;
             margin: 0;
             display: inline-block;
             position: relative;
+            align-items: center;
+
+            width: 99.6%;
+            height: 99.6%;
         }
 
         .overlay-text {
@@ -19,7 +82,7 @@
             left: 18px;
             color: white;
             font-family: Roboto, sans-serif;
-            font-size: 50px;
+            font-size: 45px;
             font-weight: bold;
             text-align: left;
 
@@ -37,6 +100,151 @@
             opacity: .8;
             border-radius: 5px;
         }
+
+        .overall-div {
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+
+            margin-top: 50px;
+            padding: 0;
+        }
+
+        select {
+            margin-bottom: 5px;
+        }
+
+        .num-input-box {
+            font-size: 22px;
+            font-family: Roboto, sans-serif;
+            font-weight: normal;
+
+            width: 45px;
+            height: 30px;
+            text-align: center;
+        }
+
+        .num-input-box:focus {
+            outline: 2px solid #FF0D0D;
+            box-shadow: 0 4px 10px 0 rgba(0, 0, 0, 0.3);
+        }
+
+        .choices-div {
+            display: flex;
+            flex-direction: column;
+            align-items: left;
+
+            min-width: 400px;
+            width: 50vh;
+            /* width: 600px; */
+            max-width: 30%;
+        }
+
+    /*
+    Styling the Rating Slider:
+    https://stackoverflow.com/questions/18389224/how-to-style-html5-range-input-to-have-different-color-before-and-after-slider
+    */
+
+    /* The Track itself */
+    input[type='range'] {
+        -webkit-appearance: none;
+
+        /* width: 425px; */
+        width: 85%;
+        height: var(--slider-height);
+
+        /* overflow: hidden; */
+        background-color: #E6E6E6;
+        border-radius: 100px;
+    }
+    input[type='range']::-webkit-slider-runnable-track {
+        -webkit-appearance: none;
+
+        /* width: 425px; */
+        width: 85%;
+        height: var(--slider-height);
+
+        color: #5F2AD0;
+        border-radius: 100px;
+    }
+    
+    /* Thumb */
+    input[type='range']::-webkit-slider-thumb {
+        -webkit-appearance: none;
+
+        border-radius: 100px;
+        border: 3px solid white;
+
+        width: 42px;
+        height: 42px;
+        cursor: ew-resize;
+        background: #5F2AD0;
+    }
+    input[type='range']::-moz-range-thumb {
+        border-radius: 100px;
+        border: 3px solid white;
+
+        width: 42px;
+        height: 42px;
+        cursor: ew-resize;
+        background: #5F2AD0;
+    }
+
+    /* Before Thumb */
+    input[type="range"]::-moz-range-progress {
+        height: var(--slider-height);
+        background-color: #5F2AD0;
+
+        border-radius: 100px;
+    }
+    input[type="range"]::-ms-fill-lower {
+        height: var(--slider-height);
+        background-color: #5F2AD0;
+        border-radius: 100px;
+    }
+
+    /* After Thumb */
+    input[type="range"]::-ms-fill-upper {  
+        background-color: #E6E6E6;
+    }
+    input[type="range"]::-moz-range-track {  
+        background-color: #E6E6E6;
+    }
+
+    /* BEFORE THUMB WHEN DISABLED */
+    input[type="range"]:disabled::-moz-range-progress {
+        height: var(--slider-height);
+        background-color: var(--disabled-color);
+        border-radius: 100px;
+    }
+    input[type="range"]:disabled::-ms-fill-lower {
+        height: var(--slider-height);
+        background-color: var(--disabled-color);
+        border-radius: 100px;
+    }
+
+    /* THUMB WHEN DISABLED */
+    input[type='range']:disabled::-webkit-slider-thumb {
+        -webkit-appearance: none;
+
+        border-radius: 100px;
+        border: 3px solid white;
+
+        width: 42px;
+        height: 42px;
+        cursor: ew-resize;
+        background: var(--disabled-color);
+    }
+    input[type='range']:disabled::-moz-range-thumb {
+        border-radius: 100px;
+        border: 3px solid white;
+
+        width: 42px;
+        height: 42px;
+        cursor: ew-resize;
+        background: var(--disabled-color);
+    }
     </style>
 
 </head>
@@ -45,39 +253,128 @@
 
     {% include 'navbar.html' %}
 
-    <div style="text-align: center; margin-top: 50px;">
-        <h1>Rate this Person:</h1>
-        <div class="img-container">
-            <img id="loadedImage" style="border-radius: 5px;" src="{{ random_image }}" alt="Random Image">
-            <div class="img-gradient-overlay"></div>
-            <p class="overlay-text" id="name-overlay">Person's Name</p>
+    <div class="overall-div">
+        <!-- <h1>Rate this Person:</h1> -->
+
+        <div class="choices-div">
+            {% include 'dropdown.html' %}
+        
+            <div class="img-container">
+                <img id="loadedImage" style="border-radius: 5px; width: 100%; height: 100%;" src="{{ random_image }}" alt="Random Image">
+                <div class="img-gradient-overlay"></div>
+                <p class="overlay-text" id="name-overlay">Person's Name</p>
+            </div>
+
+            <div style="display: flex; flex-direction: row; align-items: center; justify-content: space-between; margin-top: 10px;">
+                <input type="range" min="0" max="10" step="0.1" class="slider" id="rating_slider">
+                <input class="num-input-box" type="text" id="textInput" oninput="validateInput(this)" onblur="clickOff(this)" value="5">
+            </div>
+
         </div>
+
     </div>
 
-    <div class="slidecontainer" style="text-align: center; margin-top: 50px;">
-        <input type="range" min="0" max="10" step="0.1" value="5" class="slider" id="rating_slider">
-        <p>Value: <span id="slider_value"></span></p>
+    <div style="text-align: center; margin-top: 30px; display: flex; flex-direction: column; align-items: center;">
 
-        <div id="avg_div" style="display:none;"><p>Average Rating: <span id="avg_rating"></span></p></div>
+        <!-- -->
+        <div style="display: flex; flex-direction: row; align-items: center; justify-content: center; min-width: 400px; max-width: 500px; width: 50%;">
+            <button id="leaderboard-button" onclick="window.location.href='{{ url_for('leaderboard') }}'" class="secondary-button" style="margin-right: 20px; display: none;">Leaderboard</button>
+            <button id="gameButton" class="gradient-button" onclick="showAndRemoveNext()">Submit</button>
+        </div>
 
+        <!--
         <button id="gameButton" class="gradient-button" onclick="showAndRemoveNext()">Submit</button>
+        -->
+        
+        <div id="submit_div" style="display:block; align-items: center; margin-left: 10px; margin-right: 10px;">    
+            <p style="font-family: Roboto, sans-serif, normal; font-size: 22px; color: #2E2E2E;">Submit to reveal <span id="name-bottom">Person's Name</span>'s rating</p>
+        </div>
+        
+        <div id="results_div" style="display:none; align-items: center; margin-left: 50px; margin-right: 50px; max-width: 700px;">
+            <p style="font-family: Roboto, sans-serif, normal; font-size: 22px; color: #2E2E2E;">
+                <span id="name_result">
+                    NAME
+                </span> has an average rating of 
+                <span id="avg_rating" style="color: #FF0D0D; font-weight: 700;">
+                    RATING
+                </span> by 
+                <span id="amt_raters" style="color: #5F2AD0; font-weight: 700;">
+                    AMT_RATERS
+                </span> people. Ranked
+                <span id="ranking"  style="color: #DB00FF; font-weight: 700;">
+                    RANKING
+                </span> on the leaderboard.
+            </p>
+        </div>
+
+        <!-- NAME has an average rating of RATING by AMT_RATERS people. Ranked #RANKING on the leaderboard -->
     </div>
 
-    {% include 'dropdown.html' %}
     {% include 'footer.html' %}
 
-
+    
     <script>
         document.getElementById("name-overlay").innerText = "{{ name }}"
+        document.getElementById("name-bottom").innerText = "{{ name }}"
+        document.getElementById("name_result").innerText = "{{ name }}"
 
         // Gets the value of the rating slider (game.html)
         var slider = document.getElementById("rating_slider");
-        var output = document.getElementById("slider_value");
-        output.innerHTML = slider.value;
+        var textInput = document.getElementById("textInput");
 
         slider.oninput = function() {
-        output.innerHTML = this.value;
+            textInput.value = slider.value;
         }
+
+        function validateInput(input) {
+            input.value = input.value.replace(/[^0-9.]/g, '')
+            input.value = input.value.replace(/(\..*)\./g, '$1')
+
+            // Ensure the value is between 0 and 10
+            if (input.value < 0) {
+                input.value = 0;
+            } else if (input.value > 10) {
+                input.value = 10;
+            }
+
+            slider.value = textInput.value;
+        }
+
+        function clickOff(input) {
+            var slider = document.getElementById("rating_slider");
+            console.log(input.value)
+
+            if (input.value == "") {
+                input.value = slider.value
+            }
+
+            if (input.value.slice(-1) == ".") {
+                input.value = input.value.slice(0, -1)
+            }
+
+            input.value = truncateNumber(input.value, 1);
+            slider.value = textInput.value;
+        }
+
+        function truncateNumber(number, decimalPlaces) {
+            // Convert the number to a string
+            let numberString = number.toString();
+
+            // Find the position of the decimal point
+            let decimalIndex = numberString.indexOf('.');
+
+            // If the decimal point is found
+            if (decimalIndex !== -1) {
+                // Create a new string with the desired number of decimal places
+                numberString = numberString.slice(0, decimalIndex + decimalPlaces + 1);
+            }
+
+            // Convert the string back to a number
+            let truncatedNumber = parseFloat(numberString);
+
+            return truncatedNumber;
+        }
+
     </script>
 
     <script src="../static/script.js" defer></script>

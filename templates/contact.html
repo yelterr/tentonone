@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <link rel="icon" type="image/x-icon" href="../static/images/favicon.ico">
+
+    <title>Contact Us – Ten to None</title>
+
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Roboto+Condensed&display=swap');
+
+        body {
+            font-family: Roboto, sans-serif;
+            color: #2E2E2E;
+        }
+
+        form {
+            min-width: 400px;
+            margin: 0 auto;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-size: 18px;
+        }
+
+        input, textarea {
+            width: 100%;
+            padding: 8px;
+            margin-bottom: 16px;
+            box-sizing: border-box;
+            resize: none;
+            font-family: Roboto, sans-serif;
+
+            font-size: 18px;
+
+            border: 1px solid #777;
+            background: white;
+            box-shadow: none;
+
+            border-radius: 3px;
+        }
+
+        input:focus, textarea:focus {
+            outline: 2px solid #FF0D0D;
+            box-shadow: 0 4px 10px 0 rgba(0, 0, 0, 0.3);
+        }
+
+        h1 {
+            font-family: Roboto Condensed, sans-serif;
+            color: #2E2E2E;
+            font-size: 50px;
+            margin: 0;
+            padding: 0;
+        }
+
+        .gradient-button {
+            color: white;
+            font-family: 'Roboto', sans-serif, Bold;
+            font-weight: 700;
+            background-color: #2A6AD0;
+            background-image: linear-gradient(to right, #5F2AD0, #FF0D0D);
+            font-size: 20px;
+
+            padding-top: 14px;
+            padding-bottom: 16px;
+            margin-bottom: 10px;
+            margin-top: 30px;
+            border-radius: 240px;
+
+            width: 230px;
+            border: none;
+            transition: width 0.5s, background-image 4s ease-in-out;
+        }
+
+        .gradient-button:hover {
+            background-image: linear-gradient(to right, hsl(259, 66%, 55%), hsl(0, 100%, 59%));
+            /* width: 240px; */
+        }
+
+        .gradient-button:active {
+            background-image: linear-gradient(to right, hsl(259, 66%, 60%), hsl(0, 100%, 64%));
+            /* width: 240px; */
+            /* box-shadow: 0 2px #666;
+            transform: translateY(2px); */
+        }
+
+        .result-text {
+            display: none;
+            font-family: Roboto, sans-serif;
+            font-size: 18px;
+        }
+
+    </style>
+
+</head>
+<body>
+    <!-- Welcome to Ten to None -->
+
+    {% include 'navbar.html' %}
+    
+    <div style="display: flex; flex-direction: column; align-items: center;">
+        <h1>Contact Us</h1>
+
+        <form action="{{ url_for('submit_form') }}" method="post">
+
+            <label for="name">Name:</label>
+            <input type="text" id="name" name="name" required>
+
+            <label for="email">Email:</label>
+            <input type="email" id="email" name="email" required>
+
+            <label for="message">Message:</label>
+            <textarea id="message" name="message" rows="4" required></textarea>
+
+            <div style="width: 100%; display: flex; flex-direction: column; align-items: center;">
+                <button class="gradient-button" type="submit">Submit</button>
+
+                <p id="result-text" class="result-text">Success! Your message has been received.</p>
+
+            </div>
+
+        </form>
+    </div>
+
+    {% include 'footer.html' %}
+    
+    
+    <script>
+        if ("{{ form_submit }}") {
+            document.getElementById("result-text").style.display = "block";
+        }
+        else {
+            document.getElementById("result-text").style.display = "none";
+        }
+    </script>
+</body>
+</html>

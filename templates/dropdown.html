@@ -1,4 +1,31 @@
-<select id="myDropdown" onchange="makeGenderDropdownChanges()" style="position: fixed; top: 10px; right: 10px;">
+<style>
+    @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap');
+
+    .gender-dropdown {
+        width: 225px;
+        font-family: Roboto, sans-serif;
+        font-size: 18px;
+        padding: 3.6px 7.2px;
+
+        display: grid;
+        grid-template-areas: "select";
+        align-items: center;
+        position: relative;
+
+        border: 1px solid #777;
+        background: white;
+        color: #2E2E2E;
+        box-shadow: none;
+        border-radius: 5px;
+    }
+    
+    .gender-dropdown:hover {
+        background: #E6E6E6;
+    }
+
+</style>
+
+<select id="myDropdown" onchange="makeGenderDropdownChanges()" class="gender-dropdown">
     <!-- The option elements define the individual items in the dropdown -->
     <option value="both">Both Men and Women</option>
     <option value="men">Men Only</option>

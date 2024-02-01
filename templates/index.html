@@ -2,9 +2,13 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>My Project</title>
+    <link rel="icon" type="image/x-icon" href="../static/images/favicon.ico">
+
+    <!-- TODO: ADD AN EASTER EGG TO THIS PAGE (OR ALL, DEPENDS ON WHAT) -->
+    <title>Ten to None</title>
 
     <style>
+        /* TODO - Make sure that each style page only imports the sizes it needs */
         @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap');
 
         /*
@@ -18,7 +22,7 @@
             font-family: 'Roboto', sans-serif, Bold;
             font-weight: 700;
             background-color: #2A6AD0;
-            background-image: linear-gradient(to right, #2A6AD0, #FF0D0D);
+            background-image: linear-gradient(to right, #5F2AD0, #FF0D0D);
             font-size: 20px;
 
             padding-top: 14px;
@@ -33,12 +37,12 @@
         }
 
         .gradient-button:hover {
-            background-image: linear-gradient(to right, hsl(217, 66%, 55%), hsl(0, 100%, 59%));
+            background-image: linear-gradient(to right, hsl(259, 66%, 55%), hsl(0, 100%, 59%));
             /* width: 240px; */
         }
 
         .gradient-button:active {
-            background-image: linear-gradient(to right, hsl(217, 66%, 60%), hsl(0, 100%, 64%));
+            background-image: linear-gradient(to right, hsl(259, 66%, 60%), hsl(0, 100%, 64%));
             /* width: 240px; */
             /* box-shadow: 0 2px #666;
             transform: translateY(2px); */
@@ -87,9 +91,10 @@
             margin: 0;
         }
 
-        img {
-            max-width: 90vw;
-            max-height: 50vh;
+        .big-logo {
+            
+            width: 40%;
+            min-width: 500px;
             margin-top: 0;
             padding: 0;
 
@@ -106,9 +111,10 @@
 
         .main-div {
             margin: 0 auto;
-            max-width: 56vw;
-            min-height: 75vh;
+        }
 
+        select {
+            margin-top: 10px;
         }
 
     </style>
@@ -123,21 +129,24 @@
         <!-- Main Menu -->
 
         <div class="test-box">
+            <img class="big-logo" src="../static/images/logo.png" alt="There should be a logo here... :/">
+            <!--
             <img src="../static/images/notMyLogo.png" alt="Italian Trulli">
-            <p>Rate celebrities on a scale of<span style="color: #2A6AD0; font-weight: 700;"> 0 </span>to<span style="color: #FF0D0D; font-weight: 700;"> 10</span></p>
+            -->
+            <p>Rate attractiveness on a scale of<span style="color: #FF0D0D; font-weight: 700;"> 0 </span>to<span style="color: #5F2AD0; font-weight: 700;"> 10</span></p>
+            {% include 'dropdown.html' %}
         </div>
         
         
         <div class="button-container">
             <button id="startButton" class="gradient-button" onclick="startGame()">Rate People</button>
             <button onclick="window.location.href='{{ url_for('leaderboard') }}'" class="secondary-button">Leaderboard</button>
-            <button class="secondary-button">About</button>
+            <button onclick="window.location.href='{{ url_for('about') }}'" class="secondary-button">About</button>
         </div>
 
     </div>
 
     {% include 'footer.html' %}
-    {% include 'dropdown.html' %}
     
     
     <script src="../static/script.js" defer></script>

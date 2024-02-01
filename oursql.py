@@ -71,18 +71,18 @@ def add_row(connection, filename, rating):
 # Clears the ratings table
 # I kept the delete and recreate just in case I want to change "ratings"
 def reset_ratings(db_connection):
-    #delete_query = "DROP TABLE ratings;"
-    #execute_query(db_connection, delete_query)
+    delete_query = "DROP TABLE ratings;"
+    execute_query(db_connection, delete_query)
     new_ratings_query = """
     CREATE TABLE ratings (
         id INT AUTO_INCREMENT PRIMARY KEY,
-        filename VARCHAR(40) NOT NULL,
+        filename VARCHAR(70) NOT NULL,
         rating DECIMAL(7, 5) NOT NULL,
         date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
         quality BOOL DEFAULT 1
     );
     """
-    #execute_query(db_connection, new_ratings_query)
+    execute_query(db_connection, new_ratings_query)
 
 
     clear_query = "TRUNCATE TABLE ratings;"
@@ -131,6 +131,22 @@ def get_all_average_ratings(db_connection):
         ratings.append((filename, amt_raters, rating))
 
     return ratings
+
+def get_ranking(db_connection, filename):
+    rankings = sorted(get_all_average_ratings(db_connection), key=(lambda x : x[2]))[::-1]
+
+    try:
+        index = next(index for index, sublist in enumerate(rankings) if filename in sublist)
+        return index + 1
+    except StopIteration:
+        pass
+
+    return "[Error: please tell us about this]"
+
+def get_count(db_connection, filename):
+    q = f"SELECT COUNT(*) AS filename FROM ratings WHERE filename = '{filename}';"
+    amt_raters = read_query(db_connection, q)[0][0]
+    return amt_raters
 
 # A testing tool
 def print_all_rows(db_connection):
