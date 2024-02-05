@@ -135,7 +135,7 @@ def clean_num(num):
     # Clean the repeating numbers
     if len(to_clean) >= 7:
             if set(to_clean[1:4]) == set(to_clean[1]):
-                if int(to_clean[0]) == int(to_clean[1]) + 1:
+                if int(to_clean[0]) == int(to_clean[1]) + 1 or int(to_clean[0]) == int(to_clean[1]):
                     to_clean.pop(1)
                     to_clean.pop(2)
                     return float("".join(to_clean[::-1]))

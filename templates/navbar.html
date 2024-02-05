@@ -34,8 +34,15 @@
     }
 
     .topnav-div {
+        /* NEW */
+        position: absolute;
+        top: 0px;
+        left: 50%;
+        transform: translateX(-50%);
+        /* === */
+
+
         margin: 0 auto;
-        margin-bottom: 8vh;
         padding: 0;
 
         display: flex;
@@ -43,7 +50,7 @@
         justify-content: space-between;
         align-items: center;
 
-        max-width: 56vw;
+        width: 56vw;
         height: 50px;
         
         border-bottom: 1px solid #DADADA;

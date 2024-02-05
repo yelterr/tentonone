@@ -41,7 +41,7 @@ function showAndRemoveNext() {
     var textInput = document.getElementById("textInput");
 
     // Changes Button Text
-    if (button.innerText === "Submit") {
+    if (button.innerText.slice(0, 6) === "Submit") {
         makeNext();
     } else {
         makeSubmit();
@@ -60,7 +60,7 @@ function makeSubmit() {
     
     updateGenderChoice();
     loadImage();
-    button.innerText = "Submit"
+    button.innerHTML = "Submit <span id='final-number'></span>/10"
     slider.value = 5
     textInput.value = 5
     results_div.style.display = "none"
@@ -69,6 +69,7 @@ function makeSubmit() {
 
     slider.disabled = false;
     textInput.disabled = false;
+    document.getElementById("final-number").innerText = slider.value;
 }
 
 // TODO - Change this to whatever makes the screen next

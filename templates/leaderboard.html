@@ -15,7 +15,6 @@
             --width: 41%;
             --minimum-width: 400px;
         }
-        
 
         @media screen and (max-width: 600px) {
             .name-txt {
@@ -288,6 +287,20 @@
             font-size: 50px;
             margin: 0;
             padding: 0;
+
+            margin-top: 120px;
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+
+            /* NEW */
+            min-height: 100vh;
+            position: relative;
+            /* === */
+
+            
         }
 
     </style>
@@ -356,6 +369,9 @@
         </div>
     
     </div>
+
+    <!-- Couldn't figure out the margins, this works literally perfectly lmao -->
+    <div style="height: 110px;"></div>
 
     {% include 'footer.html' %}
 

@@ -22,6 +22,8 @@
             font-weight: normal;
             font-size: 18px;
             color: #2E2E2E;
+
+            line-height: 28px;
         }
 
         .text-div {
@@ -33,6 +35,34 @@
             margin-left: 10px;
             margin-right: 10px;
         }
+
+        .about-a {
+        text-decoration:none;
+        color: #2287CD;
+        font-family: 'Roboto';
+        /*
+        padding-left: 20px;
+        */
+        padding-right: 0;
+
+        white-space: nowrap;
+    }
+
+        body {
+            margin: 0;
+            padding: 0;
+
+            /* NEW */
+            min-height: 100vh;
+            position: relative;
+
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            /* === */
+        }
+
     </style>
 
 </head>
@@ -42,21 +72,19 @@
     {% include 'navbar.html' %}
     <div style="display: flex; flex-direction: column; align-items: center;">
         <div class="text-div">
-            <h1>About Us</h1>
+            <h1>About</h1>
+            <!-- <img style="height: 100px;" src="../static/images/logo.png"> -->
+            
             <p>
-                Ten to None allows you to rate the attractiveness of celebrities
-                on a scale of 0 to 10.Ten to None allows you to rate the attractiveness of celebrities
-                on a scale of 0 to 10.Ten to None allows you to rate the attractiveness of celebrities
-                on a scale of 0 to 10.Ten to None allows you to rate the attractiveness of celebrities
-                on a scale of 0 to 10.Ten to None allows you to rate the attractiveness of celebrities
-                on a scale of 0 to 10.
+                Ten to None lets you rate the attractiveness of celebrities on a scale of 0-10.
+                I built it because why not.
+                To make it as accurate as possible, I've made all votes anonymous.
+                I only data I collect are the date and your ratings of people.
+                The images are sourced from all over the internet, and cropped by an AI.
+                Also I'll be adding more images as time goes on, so look out for that.
                 <br><br>
-                Ten to None allows you to rate the attractiveness of celebrities
-                on a scale of 0 to 10.Ten to None allows you to rate the attractiveness of celebrities
-                on a scale of 0 to 10.Ten to None allows you to rate the attractiveness of celebrities
-                on a scale of 0 to 10.Ten to None allows you to rate the attractiveness of celebrities
-                on a scale of 0 to 10.Ten to None allows you to rate the attractiveness of celebrities
-                on a scale of 0 to 10.
+                If you have any questions, requests, or bugs to report please go to the <a class="about-a" href="{{ url_for('contact') }}">contact us</a> page.
+                If you want to help me keep this data free for everyone, you can donate here[link] and follow @tentonone on instagram or twitter/X.
             </p>
         </div>
     </div>
