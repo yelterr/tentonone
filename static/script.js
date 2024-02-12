@@ -48,12 +48,15 @@ function showAndRemoveNext() {
     }
 }
 
-// TODO - Change this to whatever makes the screen submit
 function makeSubmit() {
     var button = document.getElementById("gameButton")
     var leaderboard_button = document.getElementById("leaderboard-button");
-    var submit_div = document.getElementById("submit_div")
-    var results_div = document.getElementById("results_div")
+    
+    // var submit_div = document.getElementById("submit_div")
+    // var results_div = document.getElementById("results_div")
+
+    var submit_to_reveal = document.getElementById("submit-to-reveal");
+    var revealed = document.getElementById("revealed");
 
     var slider = document.getElementById("rating_slider");
     var textInput = document.getElementById("textInput");
@@ -63,8 +66,10 @@ function makeSubmit() {
     button.innerHTML = "Submit <span id='final-number'></span>/10"
     slider.value = 5
     textInput.value = 5
-    results_div.style.display = "none"
-    submit_div.style.display = "block"
+
+    revealed.style.display = "none"
+    submit_to_reveal.style.display = "block"
+    
     leaderboard_button.style.display = "none"
 
     slider.disabled = false;
@@ -72,21 +77,27 @@ function makeSubmit() {
     document.getElementById("final-number").innerText = slider.value;
 }
 
-// TODO - Change this to whatever makes the screen next
+
 function makeNext() {
     sendRating();
 
     var button = document.getElementById("gameButton");
     var leaderboard_button = document.getElementById("leaderboard-button");
-    var submit_div = document.getElementById("submit_div");
-    var results_div = document.getElementById("results_div");
+
+    // var submit_div = document.getElementById("submit_div")
+    // var results_div = document.getElementById("results_div")
+
+    var submit_to_reveal = document.getElementById("submit-to-reveal");
+    var revealed = document.getElementById("revealed");
 
     var slider = document.getElementById("rating_slider");
     var textInput = document.getElementById("textInput");
 
     button.innerText = "Next"
-    submit_div.style.display = "none"
-    results_div.style.display = "block"
+
+    submit_to_reveal.style.display = "none"
+    revealed.style.display = "block"
+
     leaderboard_button.style.display = "block"
 
     slider.disabled = true;
@@ -196,13 +207,13 @@ function makeGenderDropdownChanges() {
         }
         else if (dropdownValue == "women") {
             if (!(impath.includes("/women"))) {
-                loadImage();
+                //loadImage();
                 makeSubmit();
             }
         }
         else if (dropdownValue == "men") {
             if (!(impath.includes("/men"))) {
-                loadImage();
+                //loadImage();
                 makeSubmit();
             }
         }

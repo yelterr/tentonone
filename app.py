@@ -2,11 +2,9 @@ from flask import Flask, render_template, redirect, url_for, send_from_directory
 import os
 import pathlib
 import random
-from oursql import credentials, create_db_connection, add_row, get_current_rating, get_all_average_ratings, get_ranking, get_count
+from oursql import *
 from send_email import send_email
-
-# TODO - Delete this when you implement the name retrieval from the name table
-import numpy as np
+from urllib.parse import unquote
 
 # TODO - MOVE IMAGES OUTSIDE OF STATIC (GENERAL TASK, NEEDS SOME FUNCTION CHANGES PROBABLY)
 
@@ -22,16 +20,27 @@ db_connection = create_db_connection(credentials.host, credentials.username, cre
 def index():
     return render_template('index.html')
 
+# Serve images in the /images directory
+@app.route('/images/<path:filename>')
+def serve_image(filename):
+    return send_from_directory('images', filename)
+
+# Serve icon
+@app.route('/favicon.ico')
+def favicon():
+    return send_from_directory('images', 'favicon.ico', mimetype='image/vnd.microsoft.icon')
+
 # Begins the game by loading the game template and providing the first image
 @app.route('/rate')
 def start_game():
     random_image = get_random_image(gender_choice)
-    name = get_name(random_image)
+    name, source = get_name(random_image)
+    source_type = determine_source_type(source)
 
     global last_image
     last_image = random_image
 
-    return render_template("game.html", random_image=random_image, name=name)
+    return render_template("game.html", random_image=random_image, name=name, source=source, source_type=source_type)
 
 @app.route("/leaderboard")
 def leaderboard():
@@ -44,9 +53,10 @@ def get_image():
     global last_image
     last_image = image_path
 
-    name = get_name(image_path)
+    name, source = get_name(image_path)
+    source_type = determine_source_type(source)
 
-    result = {"impath" : image_path, "name" : name}
+    result = {"impath" : image_path, "name" : name, "source" : source, "source_type" : source_type}
 
     return jsonify(result=result)
 
@@ -56,10 +66,10 @@ def send_rating():
     data = request.get_json()
 
     link = data["image_path"]
-    filename = extract_filename(link)
+    filename = extract_filepath(link)
 
     rating = float(data["slider_value"])
-    add_row(db_connection, filename, rating)
+    add_rating(db_connection, filename, rating)
     rating_now = get_current_rating(db_connection, filename)
 
     if rating_now == -1:
@@ -108,15 +118,15 @@ def submit_form():
 # Retrieves a random image path from the images directory
 def get_random_image(gender_choice):
     if gender_choice == "men":
-        all_men_images = list(pathlib.Path("static/images/").glob("men/*.jpg"))
+        all_men_images = list(pathlib.Path("images/").glob("men/*.jpg"))
         random_impath = random.choice(all_men_images)
         chosen_image = str(random_impath)
     elif gender_choice == "women":
-        all_women_images = list(pathlib.Path("static/images/").glob("women/*.jpg"))
+        all_women_images = list(pathlib.Path("images/").glob("women/*.jpg"))
         random_impath = random.choice(all_women_images)
         chosen_image = str(random_impath)
     else: # When gender_choice == "both" or any other circumstance
-        all_images = list(pathlib.Path("static/images/").glob("*/*.jpg"))
+        all_images = list(pathlib.Path("images/").glob("*/*.jpg"))
         random_impath = random.choice(all_images)
         chosen_image = str(random_impath)
 
@@ -148,7 +158,6 @@ def clean_num(num):
     
     return float("".join(to_clean[::-1]))
 
-# TODO - in name table, add gender and change this to querying that table instead of checking the lists of folders.
 def get_filtered_lines(filter="h2l"):
     ratings = get_all_average_ratings(db_connection)
 
@@ -163,18 +172,13 @@ def get_filtered_lines(filter="h2l"):
     if gender_choice == "both":
         final_ratings = ratings
     else:
-        all_men_images = list(pathlib.Path("static/images/").glob("men/*.jpg"))
-        all_women_images = list(pathlib.Path("static/images/").glob("women/*.jpg"))
-
-        if gender_choice == "men":
-            for rating in ratings:
-                if any(rating[0] in str(s) for s in all_men_images):
-                    final_ratings.append(rating)
-
-        elif gender_choice == "women":
-            for rating in ratings:
-                if any(rating[0] in str(s) for s in all_women_images):
-                    final_ratings.append(rating)
+        for rating in ratings:
+            filename = unquote(rating[0])
+            results = get_individual_info(db_connection, os.path.basename(filename))
+            if results[0][2] == gender_choice:
+                final_ratings.append(rating)
+            else:
+                continue
 
     # Adding rank to lines
     for i, rating in enumerate(final_ratings):
@@ -182,25 +186,36 @@ def get_filtered_lines(filter="h2l"):
         line[-1] = clean_num(line[-1])
         if filter == "l2h":
             line.append(len(final_ratings)-i)
-            # TODO - Implement get_name() function so that this works
-            line.append(get_name(rating[0]))
+            line.append(get_name(rating[0])[0])
             final_ratings[i] = tuple(line)
         else:
             line.append(i+1)
-            # TODO - Implement get_name() function so that this works
-            line.append(get_name(rating[0]))
+            line.append(get_name(rating[0])[0])
             final_ratings[i] = tuple(line)
 
     return final_ratings
 
-def extract_filename(filepath):
-    index = filepath.index("static")
+def extract_filepath(filepath):
+    index = filepath.index("images")
     return filepath[index:]
 
-# TODO - Implement the actual gathering of names from the name table
+# Also gets source. Just keep the name the same to confuse you in the future lol.
 def get_name(impath):
-    name = np.random.choice(["Joao Pereira", "Johnny Depp", "Margaret Thatcher", "Charles Bukowski"])
-    return name
+    filename = os.path.basename(impath).strip()
+    filename = unquote(filename)
+    results = get_individual_info(db_connection, filename)[0]
+    _, name, _, _, _, source = results
+
+    return name, source
+
+# Determines the type of the source so that I can link it correctly on the site.
+def determine_source_type(source):
+    if source[0] == "<":
+        return "wiki"
+    elif source[:4] == "http" or source[:3] == "www":
+        return "link"
+    else:
+        return "other"
 
 if __name__ == '__main__':
     app.run(debug=True)

@@ -3,16 +3,19 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="icon" type="image/x-icon" href="../static/images/favicon.ico">
+    <link rel="icon" type="image/vnd.microsoft.icon" href="/favicon.ico">
 
     <title>Rate People – Ten to None</title>
 
     <style>
-
         :root {
-            --slider-height: min(max(30px, 3.5vh), 35px);
-            --thumb-height: min(max(35px, 4.5vh), 42px);
-            --disabled-color: gray;
+            --slider-height: 25px;
+            --thumb-height: 30px;
+            --button-width: 15vw;
+        }
+
+        a {
+            color: #2E2E2E;
         }
 
         .gradient-button {
@@ -21,13 +24,17 @@
             font-weight: 700;
             background-color: #5F2AD0;
             background-image: linear-gradient(to right, #5F2AD0, #FF0D0D);
+
             /* font-size: 20px; */
-            font-size: min(max(20px, 2.5vh), 25px);
+            font-size: max(min(1.3vw, 30px), 20px);
 
             padding-top: 14px;
             padding-bottom: 16px;
             
-            width: 230px;
+            min-width: 180px;
+            width: var(--button-width);
+            max-width: 300px;
+
             border-radius: 240px;
             margin: 0;
             border: none;
@@ -50,11 +57,18 @@
             font-family: 'Roboto', sans-serif;
             font-weight: 400;
             background-color: #E6E6E6;
-            font-size: min(max(20px, 2.5vh), 25px);
+
+            /* font-size: 20px; */
+            font-size: max(min(1.3vw, 30px), 20px);
+
             padding-top: 14px;
             padding-bottom: 16px;
             border-radius: 240px;
-            width: 230px;
+
+            min-width: 180px;
+            width: var(--button-width);
+            max-width: 300px;
+
             border: none;
         }
 
@@ -66,24 +80,60 @@
             background-color: #cccccc;
         }
 
-        .img-container {
-            padding: 0;
-            margin: 0;
-            display: inline-block;
-            position: relative;
-            align-items: center;
+        .with-gender-dropdown {
+            margin: 0 auto;
 
-            width: 99.6%;
-            height: 99.6%;
+            /*
+            min-width: 400px;
+            width: 500px;
+            max-width: 26vw;
+            */
+
+            min-width: 300px;
+            width: 48vh;
+            max-width: 90vw;
+
+        }
+
+        .card-div {
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            
+            margin-top: 20px;
+            box-shadow: 0 4px 10px 0 rgba(0, 0, 0, 0.3);
+            border-radius: 5px;
+
+        }
+
+        .face {
+            min-height: 300px;
+            height: 48vh;
+            max-height: 90vw;
+
+            width: 100%;
+            border-top-left-radius: 5px;
+            border-top-right-radius: 5px;
+            border-bottom-left-radius: 0;
+            border-bottom-right-radius: 0;
+        }
+
+        .image-div {
+            position: relative;
+            /* height: 400px; */
+            height: 100%;
         }
 
         .overlay-text {
             position: absolute;
-            bottom: 10px;
+            bottom: 14px;
             left: 18px;
             color: white;
             font-family: Roboto, sans-serif;
-            font-size: min(max(30px, 5vh), 55px);
+
+            /* font-size: 45px; */
+            font-size: max(min(5vh, 50px), 30px);
             
             
             font-weight: bold;
@@ -92,41 +142,44 @@
             margin: 0;
             padding: 0;
         }
-        
+
+        .overlay-source {
+            position: absolute;
+            top: -18px;
+            left: 0;
+            color: #2E2E2E;
+            font-family: Roboto, sans-serif;
+
+            font-size: 8px;
+        }
+
         .img-gradient-overlay {
             position: absolute;
-            top: 70%;
+            bottom: 3px;
             left: 0;
             width: 100%;
             height: 30%;
             background: linear-gradient(to top, rgb(0, 0, 0), rgba(0, 0, 0, 0));
             opacity: .8;
-            border-radius: 5px;
         }
 
-        .overall-div {
-            text-align: center;
+        .choices-div {
+            width: 100%;
             display: flex;
-            flex-direction: column;
-            align-items: center;
+            flex-direction: row;
+            justify-content: space-between;
 
-            margin-top: 50px;
-            padding: 0;
-        }
-
-        select {
-            margin-bottom: 5px;
+            margin-top: 10px;
+            margin-bottom: 10px;
         }
 
         .num-input-box {
-            /* font-size: 22px; */
-            font-size: min(max(22px, 3vh), 30px);
+            font-size: 22px;
             font-family: Roboto, sans-serif;
             font-weight: normal;
 
-            /* width: 45px; */
-            height: var(--slider-height);
-            max-width: 45px;
+            margin-right: 10px;
+            width: 45px;
             text-align: center;
         }
 
@@ -135,14 +188,41 @@
             box-shadow: 0 4px 10px 0 rgba(0, 0, 0, 0.3);
         }
 
-        .choices-div {
+        .person-info-div {
             display: flex;
             flex-direction: column;
-            align-items: left;
+            justify-content: center;
 
-            min-width: 300px;
-            width: 48vh;
-            max-width: 90vw;
+            margin-left: 10px;
+            margin-right: 10px;
+
+            /* The choices-div already has a margin-bottom of 10px */
+            margin-top: 10px;
+            margin-bottom: 20px;
+
+            height: max(min(3vw, 100px), 40px);
+
+            text-align: center;
+        }
+
+        .person-info {
+            margin: 0;
+            padding: 0;
+            font-family: Roboto, sans-serif, normal;
+
+            /* font-size: 20px; */
+            font-size: max(min(1.3vw, 30px), 20px);
+
+            color: #2E2E2E; margin: 0;
+        }
+
+        .buttons-div {
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            justify-content: center;
+
+            margin-top: 30px;
             margin-left: 10px;
             margin-right: 10px;
         }
@@ -162,110 +242,119 @@
             /* === */
         }
 
-    /*
-    Styling the Rating Slider:
-    https://stackoverflow.com/questions/18389224/how-to-style-html5-range-input-to-have-different-color-before-and-after-slider
-    */
 
-    /* The Track itself */
-    input[type='range'] {
-        -webkit-appearance: none;
+        /*
+        Styling the Rating Slider:
+        https://stackoverflow.com/questions/18389224/how-to-style-html5-range-input-to-have-different-color-before-and-after-slider
+        */
 
-        /* width: 425px; */
-        width: 85%;
-        height: var(--slider-height);
+        /* The Track itself */
+        input[type='range'] {
+            -webkit-appearance: none;
+            margin-left: 10px;
+            margin-right: 10px;
 
-        /* overflow: hidden; */
-        background-color: #E6E6E6;
-        border-radius: 100px;
-    }
-    input[type='range']::-webkit-slider-runnable-track {
-        -webkit-appearance: none;
+            /* width: 75%; */
+            width: 100%;
+            box-sizing: border-box; /* Include padding in the width */
 
-        /* width: 425px; */
-        width: 85%;
-        height: var(--slider-height);
+            height: var(--slider-height);
 
-        color: #5F2AD0;
-        border-radius: 100px;
-    }
-    
-    /* Thumb */
-    input[type='range']::-webkit-slider-thumb {
-        -webkit-appearance: none;
+            /* overflow: hidden; */
+            background-color: #E6E6E6;
+            border-radius: 100px;
+        }
+        input[type='range']::-webkit-slider-runnable-track {
+            -webkit-appearance: none;
+            margin-left: 10px;
+            margin-right: 10px;
 
-        border-radius: 100px;
-        border: 3px solid white;
+            /* width: 75%; */
+            width: 100%;
+            box-sizing: border-box; /* Include padding in the width */
 
-        width: var(--thumb-height);
-        height: var(--thumb-height);
-        cursor: ew-resize;
-        background: #5F2AD0;
-    }
-    input[type='range']::-moz-range-thumb {
-        border-radius: 100px;
-        border: 3px solid white;
+            height: var(--slider-height);
 
-        width: var(--thumb-height);
-        height: var(--thumb-height);
-        cursor: ew-resize;
-        background: #5F2AD0;
-    }
+            color: #5F2AD0;
+            border-radius: 100px;
+        }
+        
+        /* Thumb */
+        input[type='range']::-webkit-slider-thumb {
+            -webkit-appearance: none;
 
-    /* Before Thumb */
-    input[type="range"]::-moz-range-progress {
-        height: var(--slider-height);
-        background-color: #5F2AD0;
+            border-radius: 100px;
+            border: 3px solid white;
 
-        border-radius: 100px;
-    }
-    input[type="range"]::-ms-fill-lower {
-        height: var(--slider-height);
-        background-color: #5F2AD0;
-        border-radius: 100px;
-    }
+            width: var(--thumb-height);
+            height: var(--thumb-height);
+            cursor: ew-resize;
+            background: #5F2AD0;
+        }
+        input[type='range']::-moz-range-thumb {
+            border-radius: 100px;
+            border: 3px solid white;
 
-    /* After Thumb */
-    input[type="range"]::-ms-fill-upper {  
-        background-color: #E6E6E6;
-    }
-    input[type="range"]::-moz-range-track {  
-        background-color: #E6E6E6;
-    }
+            width: var(--thumb-height);
+            height: var(--thumb-height);
+            cursor: ew-resize;
+            background: #5F2AD0;
+        }
 
-    /* BEFORE THUMB WHEN DISABLED */
-    input[type="range"]:disabled::-moz-range-progress {
-        height: var(--slider-height);
-        background-color: var(--disabled-color);
-        border-radius: 100px;
-    }
-    input[type="range"]:disabled::-ms-fill-lower {
-        height: var(--slider-height);
-        background-color: var(--disabled-color);
-        border-radius: 100px;
-    }
+        /* Before Thumb */
+        input[type="range"]::-moz-range-progress {
+            height: var(--slider-height);
+            background-color: #5F2AD0;
 
-    /* THUMB WHEN DISABLED */
-    input[type='range']:disabled::-webkit-slider-thumb {
-        -webkit-appearance: none;
+            border-radius: 100px;
+        }
+        input[type="range"]::-ms-fill-lower {
+            height: var(--slider-height);
+            background-color: #5F2AD0;
+            border-radius: 100px;
+        }
 
-        border-radius: 100px;
-        border: 3px solid white;
+        /* After Thumb */
+        input[type="range"]::-ms-fill-upper {  
+            background-color: #E6E6E6;
+        }
+        input[type="range"]::-moz-range-track {  
+            background-color: #E6E6E6;
+        }
 
-        width: 42px;
-        height: 42px;
-        cursor: ew-resize;
-        background: var(--disabled-color);
-    }
-    input[type='range']:disabled::-moz-range-thumb {
-        border-radius: 100px;
-        border: 3px solid white;
+        /* BEFORE THUMB WHEN DISABLED */
+        input[type="range"]:disabled::-moz-range-progress {
+            height: var(--slider-height);
+            background-color: gray;
+            border-radius: 100px;
+        }
+        input[type="range"]:disabled::-ms-fill-lower {
+            height: var(--slider-height);
+            background-color: gray;
+            border-radius: 100px;
+        }
 
-        width: 42px;
-        height: 42px;
-        cursor: ew-resize;
-        background: var(--disabled-color);
-    }
+        /* THUMB WHEN DISABLED */
+        input[type='range']:disabled::-webkit-slider-thumb {
+            -webkit-appearance: none;
+
+            border-radius: 100px;
+            border: 3px solid white;
+
+            width: var(--thumb-height);
+            height: var(--thumb-height);
+            cursor: ew-resize;
+            background: gray;
+        }
+        input[type='range']:disabled::-moz-range-thumb {
+            border-radius: 100px;
+            border: 3px solid white;
+
+            width: var(--thumb-height);
+            height: var(--thumb-height);
+            cursor: ew-resize;
+            background: gray;
+        }
     </style>
 
 </head>
@@ -274,59 +363,55 @@
 
     {% include 'navbar.html' %}
 
-    <div class="overall-div">
-        <!-- <h1>Rate this Person:</h1> -->
-
-        <div class="choices-div">
-            {% include 'dropdown.html' %}
+    
         
-            <div class="img-container">
-                <img id="loadedImage" style="border-radius: 5px; width: 100%; height: 100%;" src="{{ random_image }}" alt="Random Image">
+    <div class="with-gender-dropdown">
+        {% include 'dropdown.html' %}
+
+        <div class="card-div">
+            <div class="image-div">
+                <img class="face" id="loadedImage" src="{{ random_image }}" alt="Random Image">
                 <div class="img-gradient-overlay"></div>
                 <p class="overlay-text" id="name-overlay">Person's Name</p>
+                <div class="overlay-source" id="source-element"></div>
+                <!-- <p class="overlay-source" id="source-element">Source: https://yourmom.com</p> -->
             </div>
 
-            <div style="display: flex; flex-direction: row; align-items: center; justify-content: space-between; margin-top: 10px;">
+            <div class="choices-div">
                 <input type="range" min="0" max="10" step="0.1" class="slider" id="rating_slider">
                 <input class="num-input-box" type="text" id="textInput" oninput="validateInput(this)" onblur="clickOff(this)" value="5">
             </div>
 
+            <div class="person-info-div">
+                <p class="person-info" id="submit-to-reveal" style="display:block;">Submit to reveal <span id="name-bottom">Person's Name</span>'s rating</p>
+
+
+                 <!-- NAME has an average rating of RATING by AMT_RATERS people. Ranked #RANKING on the leaderboard -->
+                <p class="person-info" id="revealed" style="display:none;">
+                    <span id="name_result">
+                        NAME
+                    </span> has an average rating of 
+                    <span id="avg_rating" style="color: #FF0D0D; font-weight: 700;">
+                        RATING
+                    </span> by 
+                    <span id="amt_raters" style="color: #5F2AD0; font-weight: 700;">
+                        AMT_RATERS
+                    </span> people. Ranked
+                    <span id="ranking"  style="color: #DB00FF; font-weight: 700;">
+                        RANKING
+                    </span> on the leaderboard.
+                </p>
+            </div>
+
         </div>
 
     </div>
 
-    <div style="text-align: center; margin-top: 30px; display: flex; flex-direction: column; align-items: center;">
-
-        <!-- BUTTONS -->
-        <div style="display: flex; flex-direction: row; align-items: center; justify-content: center; min-width: 300px; width: 48vh; max-width: 90vw; margin-left: 10px; margin-right: 10px;">
-            <button id="leaderboard-button" onclick="window.location.href='{{ url_for('leaderboard') }}'" class="secondary-button" style="margin-right: 20px; display: none;">Leaderboard</button>
-            <button id="gameButton" class="gradient-button" onclick="showAndRemoveNext()">Submit <span id="final-number"></span>/10</button>
-        </div>
-        
-        <div id="submit_div" style="margin-top: 10px; display:block; align-items: center; margin-left: 10px; margin-right: 10px; padding: 0; height: 60px; justify-content: center;">    
-            <p style="font-family: Roboto, sans-serif, normal; font-size: 22px; color: #2E2E2E; margin: 0;">Submit to reveal <span id="name-bottom">Person's Name</span>'s rating</p>
-        </div>
-        
-        <div id="results_div" style="margin-top: 10px; display:none; align-items: center; margin-left: 50px; margin-right: 50px; max-width: 700px; padding: 0; height: 60px;">
-            <p style="font-family: Roboto, sans-serif, normal; font-size: 22px; color: #2E2E2E; margin: 0;">
-                <span id="name_result">
-                    NAME
-                </span> has an average rating of 
-                <span id="avg_rating" style="color: #FF0D0D; font-weight: 700;">
-                    RATING
-                </span> by 
-                <span id="amt_raters" style="color: #5F2AD0; font-weight: 700;">
-                    AMT_RATERS
-                </span> people. Ranked
-                <span id="ranking"  style="color: #DB00FF; font-weight: 700;">
-                    RANKING
-                </span> on the leaderboard.
-            </p>
-        </div>
-
-        <!-- NAME has an average rating of RATING by AMT_RATERS people. Ranked #RANKING on the leaderboard -->
+    <!-- BUTTONS -->
+    <div class="buttons-div">
+        <button id="leaderboard-button" onclick="window.location.href='{{ url_for('leaderboard') }}'" class="secondary-button" style="display: none; margin-right: 10px;">Leaderboard</button>
+        <button id="gameButton" class="gradient-button" onclick="showAndRemoveNext()">Submit <span id="final-number"></span>/10</button>
     </div>
-
     {% include 'footer.html' %}
 
     
@@ -334,6 +419,45 @@
         document.getElementById("name-overlay").innerText = "{{ name }}"
         document.getElementById("name-bottom").innerText = "{{ name }}"
         document.getElementById("name_result").innerText = "{{ name }}"
+
+        // Putting Source on Page
+        var source_element = document.getElementById("source-element");
+        var source_type = "{{ source_type }}"
+        var source = "{{ source }}"
+        if (source_type == "wiki") {
+            // Decode the <> signs
+            var dummyElement = document.createElement('div');
+            dummyElement.innerHTML = source;
+            var decodedString = dummyElement.innerText;
+
+            source_element.innerHTML = `${decodedString}`
+            console.log(source_element.innerText)
+
+            if (source_element.innerText.length > 64) {
+                console.log("It was longer than 64")
+
+                // TODO - IKYK, also format wiki links on the page, they look weird.
+                var links = source_element.children
+                var link_one = links[0].href
+                var link_two = links[1].href
+
+                var name = source_element.innerText.slice(0,20);
+                var cc_by_sa = source_element.innerText.slice(-34,-22);
+                var via_commons = source_element.innerText.slice(-21,)
+                console.log(name)
+                console.log(cc_by_sa)
+                console.log(via_commons)
+            }
+            
+            //console.log(source_element.innerHTML)
+        }
+        else if (source_type == "link") {
+            var wiki_source = `<p>Source: <a href="${source}">Link</a></p>`
+            source_element.innerHTML = wiki_source;
+        }
+        else {
+            source_element.innerText = `<p>Credit: ${source}</p>`
+        }
 
         // Gets the value of the rating slider (game.html)
         var slider = document.getElementById("rating_slider");
