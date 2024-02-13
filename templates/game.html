@@ -145,10 +145,12 @@
 
         .overlay-source {
             position: absolute;
-            top: -18px;
+            top: -10px;
             left: 0;
             color: #2E2E2E;
             font-family: Roboto, sans-serif;
+            margin: 0;
+            padding: 0;
 
             font-size: 8px;
         }
@@ -214,6 +216,11 @@
             font-size: max(min(1.3vw, 30px), 20px);
 
             color: #2E2E2E; margin: 0;
+        }
+
+        p {
+            margin: 0;
+            padding: 0;
         }
 
         .buttons-div {
@@ -416,9 +423,13 @@
 
     
     <script>
-        document.getElementById("name-overlay").innerText = "{{ name }}"
-        document.getElementById("name-bottom").innerText = "{{ name }}"
-        document.getElementById("name_result").innerText = "{{ name }}"
+        var name = "{{ name }}".replace(/&#(\d+);/g, function(match, dec) {
+            return String.fromCharCode(dec);
+        });
+        console.log(name)
+        document.getElementById("name-overlay").innerText = name
+        document.getElementById("name-bottom").innerText = name
+        document.getElementById("name_result").innerText = name
 
         // Putting Source on Page
         var source_element = document.getElementById("source-element");
@@ -431,22 +442,17 @@
             var decodedString = dummyElement.innerText;
 
             source_element.innerHTML = `${decodedString}`
-            console.log(source_element.innerText)
-
             if (source_element.innerText.length > 64) {
-                console.log("It was longer than 64")
-
-                // TODO - IKYK, also format wiki links on the page, they look weird.
                 var links = source_element.children
                 var link_one = links[0].href
                 var link_two = links[1].href
 
-                var name = source_element.innerText.slice(0,20);
-                var cc_by_sa = source_element.innerText.slice(-34,-22);
-                var via_commons = source_element.innerText.slice(-21,)
-                console.log(name)
-                console.log(cc_by_sa)
-                console.log(via_commons)
+                var name = source_element.innerText.slice(0,20); // Link 1
+                var cc_by_sa = source_element.innerText.slice(-34,-22); // Link 2
+                var via_commons = source_element.innerText.slice(-21,); // Just text
+                
+                var new_html = `<a href=${link_one}>${name}</a> <a href=${link_two}>${cc_by_sa}</a> ${via_commons}`
+                source_element.innerHTML = new_html;
             }
             
             //console.log(source_element.innerHTML)
@@ -482,16 +488,23 @@
 
             var final_val = truncateNumber(input.value, 1)
 
-            slider.value = textInput.value;
+            slider.value = final_val;
             document.getElementById("final-number").innerText = final_val;
+            if (!(final_val)) {
+
+                document.getElementById("final-number").innerText = 5;
+            }
+            
         }
 
         function clickOff(input) {
             var slider = document.getElementById("rating_slider");
-            console.log(input.value)
+            var submit = document.getElementById("final-number");
 
             if (input.value == "") {
-                input.value = slider.value
+                input.value = 5;
+                slider.value = 5;
+                submit.innerText = 5;
             }
 
             if (input.value.slice(-1) == ".") {
@@ -499,7 +512,6 @@
             }
 
             input.value = truncateNumber(input.value, 1);
-            slider.value = textInput.value;
         }
 
         function truncateNumber(number, decimalPlaces) {

@@ -120,10 +120,7 @@ if __name__ == "__main__":
     print("Here are the bad apples: ")
     for apple in bad_people:
         print(apple)
-    '''
-
-    replace_image("/home/ethan/Pictures/unedited_photos/men/DaBaby.jpg", "men")
-    
+    '''   
     
     print("All done!")
         

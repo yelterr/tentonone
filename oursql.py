@@ -191,7 +191,7 @@ def get_ranking(db_connection, filename):
     return "[Error: please tell us about this]"
 
 def get_count(db_connection, filename):
-    q = f"SELECT COUNT(*) AS filename FROM ratings WHERE filename = '{filename}';"
+    q = f"SELECT COUNT(*) AS filename FROM ratings WHERE filename = \"{filename}\";"
     amt_raters = read_query(db_connection, q)[0][0]
     return amt_raters
 

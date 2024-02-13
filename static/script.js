@@ -17,6 +17,7 @@ function startGame() {
 
 // Changes the image (game.html)
 function loadImage() {
+    updateGenderChoice();
     fetch('/get_image')
         .then(response => response.json())
         .then(data => {

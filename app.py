@@ -6,8 +6,6 @@ from oursql import *
 from send_email import send_email
 from urllib.parse import unquote
 
-# TODO - MOVE IMAGES OUTSIDE OF STATIC (GENERAL TASK, NEEDS SOME FUNCTION CHANGES PROBABLY)
-
 app = Flask(__name__)
 gender_choice = "both"
 last_image = None
@@ -35,6 +33,7 @@ def favicon():
 def start_game():
     random_image = get_random_image(gender_choice)
     name, source = get_name(random_image)
+    print(name)
     source_type = determine_source_type(source)
 
     global last_image
@@ -55,6 +54,7 @@ def get_image():
 
     name, source = get_name(image_path)
     source_type = determine_source_type(source)
+    print(name)
 
     result = {"impath" : image_path, "name" : name, "source" : source, "source_type" : source_type}
 
@@ -70,7 +70,7 @@ def send_rating():
 
     rating = float(data["slider_value"])
     add_rating(db_connection, filename, rating)
-    rating_now = get_current_rating(db_connection, filename)
+    rating_now = clean_num(get_current_rating(db_connection, filename))
 
     if rating_now == -1:
         rating_now = "[Error, please report this to us]"
@@ -135,6 +135,9 @@ def get_random_image(gender_choice):
         print(f"Filename: {chosen_image}")
         print(f"Last Image: {last_image}")
         chosen_image = get_random_image(gender_choice)
+
+    # Test individual person
+    #chosen_image = "images/men/Shaquille_O'Neal.jpg"
 
     return chosen_image
 
@@ -205,6 +208,7 @@ def get_name(impath):
     filename = unquote(filename)
     results = get_individual_info(db_connection, filename)[0]
     _, name, _, _, _, source = results
+    name = unquote(name)
 
     return name, source
 
