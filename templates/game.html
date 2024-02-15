@@ -82,6 +82,7 @@
 
         .with-gender-dropdown {
             margin: 0 auto;
+            margin-top: 50px;
 
             /*
             min-width: 400px;
@@ -213,7 +214,7 @@
             font-family: Roboto, sans-serif, normal;
 
             /* font-size: 20px; */
-            font-size: max(min(1.3vw, 30px), 20px);
+            font-size: max(min(1.3vw, 30px), 18px);
 
             color: #2E2E2E; margin: 0;
         }
@@ -232,6 +233,7 @@
             margin-top: 30px;
             margin-left: 10px;
             margin-right: 10px;
+            margin-bottom: 50px;
         }
 
         body {
@@ -426,7 +428,7 @@
         var name = "{{ name }}".replace(/&#(\d+);/g, function(match, dec) {
             return String.fromCharCode(dec);
         });
-        console.log(name)
+        
         document.getElementById("name-overlay").innerText = name
         document.getElementById("name-bottom").innerText = name
         document.getElementById("name_result").innerText = name

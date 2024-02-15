@@ -40,7 +40,7 @@ def process_image(impath, percent_margin=0.25):
     bottom = y + height
 
     cropped_img = img.crop((x, y, right, bottom))
-    resized_image = cropped_img.resize((500, 500))
+    resized_image = cropped_img.resize((600, 600))
     return resized_image
 
 def load_image_into_1020(unedited_image_path, category):
@@ -89,10 +89,13 @@ def load_image_into_1020(unedited_image_path, category):
     return True
 
 def replace_image(unedited_image_path, category):
-    new_image = process_image(unedited_image_path)
-    filename = os.path.basename(unedited_image_path)
-    new_image.save(f"images/{category}/{filename}")
-    print(f"{filename} has been replaced.")
+    try:
+        new_image = process_image(unedited_image_path)
+        filename = os.path.basename(unedited_image_path)
+        new_image.save(f"images/{category}/{filename}")
+        print(f"{filename} has been replaced.")
+    except:
+        return False
     return True
 
 if __name__ == "__main__":
@@ -101,7 +104,7 @@ if __name__ == "__main__":
     '''
     unedited_men = list(pathlib.Path("/home/ethan/Pictures/unedited_photos/men/").glob("*.jpg"))
     for man in unedited_men:
-        result = load_image_into_1020(man, "men")
+        result = replace_image(man, "men")
         if result == False:
             bad_people.append(man)
     print("All done with the men!")
@@ -110,7 +113,7 @@ if __name__ == "__main__":
     '''
     unedited_women = list(pathlib.Path("/home/ethan/Pictures/unedited_photos/women/").glob("*.jpg"))
     for woman in unedited_women:
-        result = load_image_into_1020(woman, "women")
+        result = replace_image(woman, "women")
         if result == False:
             bad_people.append(woman)
     print("All done with the women!")

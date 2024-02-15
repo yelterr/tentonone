@@ -84,33 +84,22 @@ def add_name(connection, name, gender, filename, og_filename, source):
 
 def edit_name(connection, original_name, new_name=None, new_gender=None, new_filename=None, new_og_filename=None, new_source=None):
     condition = f"WHERE name = '{original_name}';"
+    changes = [new_name, new_gender, new_filename, new_og_filename, new_source]
+    corrosponding_stat = ["name", "gender", "filename", "og_filename", "source"]
     commands = []
-    if new_name:
-        command = f"name = '{new_name}'"
-        commands.append(command)
 
-    if new_gender:
-        command = f"gender = '{new_gender}'"
-        commands.append(command)
+    for i, change in enumerate(changes):
+        if change:
+            command = f"{corrosponding_stat[i]} = '{change}'"
+            commands.append(command)
 
-    if new_filename:
-        command = f"filename = '{new_filename}'"
-        commands.append(command)
-
-    if new_og_filename:
-        command = f"og_filename = '{new_og_filename}'"
-        commands.append(command)
-
-    if new_source:
-        command = f"source = '{new_source}'"
-        commands.append(command)
+    print(commands)
 
     for command in commands:
         update_query = f"UPDATE names SET {command} {condition}"
         result = execute_query(connection, update_query)
         if result:
             print(f"{original_name} successfully updated.")
-            return True
         else:
             print(f"There was an error updating the information of {original_name}")
 

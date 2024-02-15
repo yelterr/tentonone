@@ -281,6 +281,23 @@
             box-shadow: 0 4px 10px 0 rgba(0, 0, 0, 0.3);
         }
 
+        .overlay-source {
+            position: absolute;
+            bottom: -7px;
+            left: 0;
+            color: #2E2E2E;
+            font-family: Roboto, sans-serif;
+            margin: 0;
+            padding: 0;
+            width: 100vw;
+
+            font-size: 5px;
+        }
+
+        a {
+            color: #2E2E2E;
+        }
+
         h1 {
             font-family: Roboto Condensed, sans-serif;
             color: #2E2E2E;
@@ -333,7 +350,7 @@
 
         <div id="leaderboard-background" class="leaderboard-background">
 
-            <ul id="leaderboard_list"></ul>
+            <!-- <ul id="leaderboard_list"></ul> -->
 
 
             <!-- TODO - EASTER EGG?!?!??!!?!?!?? -->
@@ -370,19 +387,18 @@
     
     </div>
 
-    <!-- Couldn't figure out the margins, this works literally perfectly lmao -->
+    <!-- If it works, it works. lmao. -->
     <div style="height: 110px;"></div>
 
     {% include 'footer.html' %}
 
     
-
     <script>
 
         document.addEventListener('DOMContentLoaded', function () {
             // Get references to the search input and the list of elements
             const searchInput = document.getElementById('searchInput');
-            const searchList = document.getElementById('searchList');
+            //const searchList = document.getElementById('searchList');
 
             // Add an event listener to the search input
             searchInput.addEventListener('input', function () {
@@ -391,16 +407,23 @@
             });
             // Function to filter elements based on the search term
             function filterElements(searchTerm) {
+                var genderChoice = localStorage.getItem("selectedOption");
                 const elements = document.getElementsByClassName('leaderboard-element');
 
                 for (let i = 0; i < elements.length; i++) {
                     const elementText = elements[i].textContent.toLowerCase();
+                    var category = elements[i].getAttribute("data-category");
 
-                    // Hide or show elements based on the search term
-                    if (elementText.includes(searchTerm)) {
-                        elements[i].style.display = 'flex';
-                    } else {
-                        elements[i].style.display = 'none';
+                    if (genderChoice == "both" || category == genderChoice) {
+                        if (elementText.includes(searchTerm)) {
+                            elements[i].style.display = "flex";
+                        }
+                        else {
+                            elements[i].style.display = "none";
+                        }
+                    }
+                    else {
+                        elements[i].style.display = "none";
                     }
                 }
             }

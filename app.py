@@ -1,10 +1,11 @@
-from flask import Flask, render_template, redirect, url_for, send_from_directory, request, jsonify
+from flask import Flask, render_template, send_from_directory, request, jsonify, make_response
 import os
 import pathlib
 import random
 from oursql import *
 from send_email import send_email
 from urllib.parse import unquote
+from datetime import datetime
 
 app = Flask(__name__)
 gender_choice = "both"
@@ -33,7 +34,6 @@ def favicon():
 def start_game():
     random_image = get_random_image(gender_choice)
     name, source = get_name(random_image)
-    print(name)
     source_type = determine_source_type(source)
 
     global last_image
@@ -90,13 +90,9 @@ def update_gender_choice():
     gender_choice = data["gender_choice"]
     return "It worked"
 
-@app.route("/retrieve_ratings", methods=["POST"])
+@app.route("/retrieve_ratings")
 def retrieve_the_ratings():
-    data = request.get_json()
-    filter = data["filterChoice"]
-    
-    rankings = get_filtered_lines(filter)
-
+    rankings = get_filtered_lines()
     return jsonify(result=rankings)
 
 @app.route("/about")
@@ -114,6 +110,44 @@ def submit_form():
     send_email(form_data)
 
     return render_template("contact.html", form_submit=True)
+
+@app.route("/robots.txt")
+def robots():
+    return send_from_directory(app.static_folder, 'robots.txt')
+
+# Define a route to generate the sitemap.xml dynamically
+@app.route('/sitemap.xml')
+def sitemap():
+    # Generate the XML content dynamically based on your routes
+    xml_content = f"""<?xml version="1.0" encoding="UTF-8"?>
+    <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+        <url>
+            <loc>{request.url_root}</loc>
+            <changefreq>monthly</changefreq>
+        </url>
+        <url>
+            <loc>{request.url_root + 'rate'}</loc>
+            <lastmod>daily</lastmod>
+        </url>
+        <url>
+            <loc>{request.url_root + 'leaderboard'}</loc>
+            <lastmod>daily</lastmod>
+        </url>
+        <url>
+            <loc>{request.url_root + 'about'}</loc>
+            <lastmod>monthly</lastmod>
+        </url>
+        <url>
+            <loc>{request.url_root + 'contact'}</loc>
+            <lastmod>monthly</lastmod>
+        </url>
+    </urlset>"""
+    
+    # Create a response with the XML content
+    response = make_response(xml_content)
+    response.headers['Content-Type'] = 'application/xml'
+    
+    return response
 
 # Retrieves a random image path from the images directory
 def get_random_image(gender_choice):
@@ -161,42 +195,20 @@ def clean_num(num):
     
     return float("".join(to_clean[::-1]))
 
-def get_filtered_lines(filter="h2l"):
+def get_filtered_lines():
     ratings = get_all_average_ratings(db_connection)
+    ratings = sorted(ratings, key=(lambda x : x[2]))[::-1]
 
-    # Sorting by highest to lowest or reverse
-    if filter == "h2l":
-        ratings = sorted(ratings, key=(lambda x : x[2]))[::-1]
-    elif filter == "l2h":
-        ratings = sorted(ratings, key=(lambda x : x[2]))
+    for i, rating in enumerate(ratings):
+        rating = list(rating)
+        rating[2] = clean_num(rating[2])
+        name, source = get_name(rating[0])
+        rating.append(name)
+        rating.append(source)
+        rating.append(determine_source_type(source))
+        ratings[i] = tuple(rating)
 
-    # Filtering for gender
-    final_ratings = []
-    if gender_choice == "both":
-        final_ratings = ratings
-    else:
-        for rating in ratings:
-            filename = unquote(rating[0])
-            results = get_individual_info(db_connection, os.path.basename(filename))
-            if results[0][2] == gender_choice:
-                final_ratings.append(rating)
-            else:
-                continue
-
-    # Adding rank to lines
-    for i, rating in enumerate(final_ratings):
-        line = list(rating)
-        line[-1] = clean_num(line[-1])
-        if filter == "l2h":
-            line.append(len(final_ratings)-i)
-            line.append(get_name(rating[0])[0])
-            final_ratings[i] = tuple(line)
-        else:
-            line.append(i+1)
-            line.append(get_name(rating[0])[0])
-            final_ratings[i] = tuple(line)
-
-    return final_ratings
+    return ratings
 
 def extract_filepath(filepath):
     index = filepath.index("images")
