@@ -2,8 +2,8 @@ from flask import Flask, render_template, send_from_directory, request, jsonify,
 import os
 import pathlib
 import random
-from oursql import *
-from send_email import send_email
+#from oursql import *
+#from send_email import send_email
 from urllib.parse import unquote
 from datetime import datetime
 
@@ -11,8 +11,8 @@ app = Flask(__name__)
 gender_choice = "both"
 last_image = None
 
-db = "tentonone"
-db_connection = create_db_connection(credentials.host, credentials.username, credentials.passwd, db)
+#db = "tentonone"
+#db_connection = create_db_connection(credentials.host, credentials.username, credentials.passwd, db)
 
 # Loads the main menu
 @app.route('/')
@@ -69,14 +69,17 @@ def send_rating():
     filename = extract_filepath(link)
 
     rating = float(data["slider_value"])
-    add_rating(db_connection, filename, rating)
-    rating_now = clean_num(get_current_rating(db_connection, filename))
+    #add_rating(db_connection, filename, rating)
+    #rating_now = clean_num(get_current_rating(db_connection, filename))
+    rating_now = 5.5
 
     if rating_now == -1:
         rating_now = "[Error, please report this to us]"
 
-    amt_raters = get_count(db_connection, filename)
-    ranking = get_ranking(db_connection, filename)
+    #amt_raters = get_count(db_connection, filename)
+    amt_raters = 5
+    #ranking = get_ranking(db_connection, filename)
+    ranking = 1
 
     result = {"rating" : rating_now, "amt_raters" : amt_raters, "ranking" : ranking}
 
@@ -107,7 +110,7 @@ def contact():
 @app.route('/submit_form', methods=['POST'])
 def submit_form():
     form_data = request.form
-    send_email(form_data)
+    #send_email(form_data)
 
     return render_template("contact.html", form_submit=True)
 
@@ -196,7 +199,8 @@ def clean_num(num):
     return float("".join(to_clean[::-1]))
 
 def get_filtered_lines():
-    ratings = get_all_average_ratings(db_connection)
+    #ratings = get_all_average_ratings(db_connection)
+    ratings = [(0, 0, 0, 0, 0, 0)]
     ratings = sorted(ratings, key=(lambda x : x[2]))[::-1]
 
     for i, rating in enumerate(ratings):
@@ -218,7 +222,8 @@ def extract_filepath(filepath):
 def get_name(impath):
     filename = os.path.basename(impath).strip()
     filename = unquote(filename)
-    results = get_individual_info(db_connection, filename)[0]
+    #results = get_individual_info(db_connection, filename)[0]
+    results = (10, "John", 0, 0, 0, "yourmom.com")
     _, name, _, _, _, source = results
     name = unquote(name)
 
@@ -234,4 +239,4 @@ def determine_source_type(source):
         return "other"
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(host="127.0.0.1", port=8080, debug=True)
