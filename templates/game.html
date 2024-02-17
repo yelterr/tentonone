@@ -213,8 +213,8 @@
             padding: 0;
             font-family: Roboto, sans-serif, normal;
 
-            /* font-size: 20px; */
-            font-size: max(min(1.3vw, 30px), 18px);
+            /* font-size: max(min(1.3vw, 30px), 18px); */
+            font-size: max(min(30px, 2vh), 18px);
 
             color: #2E2E2E; margin: 0;
         }
@@ -382,7 +382,7 @@
                 <img class="face" id="loadedImage" src="{{ random_image }}" alt="Random Image">
                 <div class="img-gradient-overlay"></div>
                 <p class="overlay-text" id="name-overlay">Person's Name</p>
-                <div class="overlay-source" id="source-element"></div>
+                <div id="source-element"></div>
                 <!-- <p class="overlay-source" id="source-element">Source: https://yourmom.com</p> -->
             </div>
 
@@ -405,7 +405,7 @@
                     </span> by 
                     <span id="amt_raters" style="color: #5F2AD0; font-weight: 700;">
                         AMT_RATERS
-                    </span> people. Ranked
+                    </span> <span id="useless-functionality">people</span>. Ranked
                     <span id="ranking"  style="color: #DB00FF; font-weight: 700;">
                         RANKING
                     </span> on the leaderboard.
@@ -433,19 +433,20 @@
         document.getElementById("name-bottom").innerText = name
         document.getElementById("name_result").innerText = name
 
-        // Putting Source on Page
+        // Putting First Source on Page
         var source_element = document.getElementById("source-element");
         var source_type = "{{ source_type }}"
         var source = "{{ source }}"
+
         if (source_type == "wiki") {
             // Decode the <> signs
             var dummyElement = document.createElement('div');
             dummyElement.innerHTML = source;
             var decodedString = dummyElement.innerText;
 
-            source_element.innerHTML = `${decodedString}`
+            source_element.innerHTML = `<p class="overlay-source">${decodedString}</p>`
             if (source_element.innerText.length > 64) {
-                var links = source_element.children
+                var links = source_element.children[0].children
                 var link_one = links[0].href
                 var link_two = links[1].href
 
@@ -453,18 +454,18 @@
                 var cc_by_sa = source_element.innerText.slice(-34,-22); // Link 2
                 var via_commons = source_element.innerText.slice(-21,); // Just text
                 
-                var new_html = `<a href=${link_one}>${name}</a> <a href=${link_two}>${cc_by_sa}</a> ${via_commons}`
+                var new_html = `<p class="overlay-source"><a href=${link_one}>${name}</a> <a href=${link_two}>${cc_by_sa}</a> ${via_commons}</p>`
                 source_element.innerHTML = new_html;
             }
             
             //console.log(source_element.innerHTML)
         }
         else if (source_type == "link") {
-            var wiki_source = `<p>Source: <a href="${source}">Link</a></p>`
+            var wiki_source = `<p class="overlay-source">Source: <a href="${source}">Link</a></p>`
             source_element.innerHTML = wiki_source;
         }
         else {
-            source_element.innerText = `<p>Credit: ${source}</p>`
+            source_element.innerText = `<p class="overlay-source">Credit: ${source}</p>`
         }
 
         // Gets the value of the rating slider (game.html)

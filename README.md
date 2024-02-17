@@ -1,2 +1,2 @@
-# hotornot
-My Version of "Hot or Not." I will change the name later.
+# Ten to None
+Gathering the ratings of people for my ultimate master plan.

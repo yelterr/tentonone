@@ -10,7 +10,7 @@ import os
 
 credentials = SQL_Creds()
 
-db = "hotornot"
+db = "tentonone"
 db_connection = create_db_connection(credentials.host, credentials.username, credentials.passwd, db)
 
 def process_image(impath, percent_margin=0.25):
@@ -124,6 +124,9 @@ if __name__ == "__main__":
     for apple in bad_people:
         print(apple)
     '''   
+
+    #replace_image("/home/ethan/Pictures/unedited_photos/women/Valkyrae.jpg", "women")
+    #edit_name(db_connection, original_name="Valkyrae", new_og_filename="IDC", new_source="https://www.theloadout.com/game-awards-2020-winners-esports")
     
     print("All done!")
         

@@ -198,11 +198,10 @@ def print_all_rows(db_connection):
 
 # ----- TESTS -----
 
-#db = "hotornot"
-#db_connection = create_db_connection(credentials.host, credentials.username, credentials.passwd, db)
+db = "tentonone"
+db_connection = create_db_connection(credentials.host, credentials.username, credentials.passwd, db)
 
-#edit_name(db_connection, original_name="Eminem", new_source="https://people.com/music/super-bowl-2022-eminem-says-his-performance-is-nerve-wracking/")
-#print(get_individual_info(db_connection, "Eminem.jpg"))
+print(get_individual_info(db_connection, "Eminem.jpg"))
 
 #      Adding rows
 #reset_ratings(db_connection)

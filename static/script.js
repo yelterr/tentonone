@@ -23,12 +23,17 @@ function loadImage() {
         .then(data => {
             const url = data.result.impath;
             const name = data.result.name;
+            var source = data.result.source;
+            var source_type = data.result.source_type;
+
+            source = makeSourceGreatAgain(source, source_type);
 
             // Set the image source dynamically
             document.getElementById('loadedImage').src = url;
             document.getElementById('name-overlay').innerText = name;
-            document.getElementById("name-bottom").innerText = name
-            document.getElementById("name_result").innerText = name
+            document.getElementById("name-bottom").innerText = name;
+            document.getElementById("name_result").innerText = name;
+            document.getElementById("source-element").innerHTML = source;
         });
 }
 
@@ -109,7 +114,7 @@ function makeNext() {
 function sendRating() {
     var imagePath = document.getElementById("loadedImage").src;
     var sliderValue = document.getElementById("rating_slider").value;
-    var genderChoice = localStorage.getItem("selectedOption");
+    var grammer_place = document.getElementById("useless-functionality");
 
     var avg_rating_txt = document.getElementById("avg_rating")
     var amt_raters_txt = document.getElementById("amt_raters")
@@ -132,6 +137,11 @@ function sendRating() {
 
         avg_rating_txt.innerText = rating
         amt_raters_txt.innerText = amt_raters
+        var persons = "people";
+        if (amt_raters == 1) {
+            var persons = "person"
+        }
+        grammer_place.innerText = persons;
         ranking_txt.innerText = "#" + ranking
     });
 
@@ -283,39 +293,12 @@ function loadLeaderboard() {
                 var name = rankings[i][3]
                 var source = rankings[i][4]
                 
-                /* JUST IN CASE I NEED TO HAVE SOURCES ON THE LEADERBOARD IN THE FUTURE
-
+                /* JUST IN CASE I NEED TO HAVE SOURCES ON THE LEADERBOARD IN THE FUTURE */
+                /*
                 var source_type = rankings[i][5]
-
-                // Getting source correct
-                if (source_type == "wiki") {
-                    // Decode the <> signs
-                    var dummyElement = document.createElement('div');
-                    dummyElement.innerHTML = source;
-                    var decodedString = dummyElement.innerText;
-
-                    source = `<p class="overlay-source">${decodedString}</p>`
-                    if (decodedString.length > 64) {
-                        var links = dummyElement.children
-                        var link_one = links[0].href
-                        var link_two = links[1].href
-
-                        var source_name = decodedString.slice(0,20); // Link 1
-                        var cc_by_sa = decodedString.slice(-34,-22); // Link 2
-                        var via_commons = decodedString.slice(-21,); // Just text
-                        
-                        source = `<p class="overlay-source"><a href=${link_one}>${source_name}</a> <a href=${link_two}>${cc_by_sa}</a> ${via_commons}</p>`
-                    }
-                    
-                    dummyElement.remove()
-                }
-                else if (source_type == "link") {
-                    source = `<p class="overlay-source">Source: <a href="${source}">Link</a></p>`
-                }
-                else {
-                    source = `<p class="overlay-source">Credit: ${source}</p>`
-                }
+                source = makeSourceGreatAgain(source, source_type)
                 */
+                
 
                 // Getting data-category correct
                 var gender = NaN;
@@ -324,6 +307,12 @@ function loadLeaderboard() {
                 }
                 else if (impath.includes("/women")) {
                     gender = "women"
+                }
+
+                var persons = "people";
+                // People vs. Person
+                if (amt_raters == 1) {
+                    var persons = "person";
                 }
 
                 const leaderboard_item = document.createElement("div");
@@ -345,7 +334,7 @@ function loadLeaderboard() {
 
                         <div class="name-and-raters">
                             <p class="name-txt" style="margin: 0; padding: 0;">${name}</p>
-                            <p style="margin: 0; padding: 0; font-size: 13px;">rated by ${amt_raters} people</p>
+                            <p style="margin: 0; padding: 0; font-size: 13px;">rated by ${amt_raters} ${persons}</p>
                         </div>
 
                         <div class="rating-div">
@@ -461,4 +450,38 @@ function changePositionText(leaderboard_element) {
     });
 
     return leaderboard_element;
+}
+
+function makeSourceGreatAgain(source, source_type) {
+    if (source_type == "wiki") {
+        // Decode the <> signs
+        var dummyElement = document.createElement('div');
+        dummyElement.innerHTML = source;
+        var decodedString = dummyElement.innerText;
+
+        source = `<p class="overlay-source">${source}</p>`
+        if (decodedString.length > 64) {
+            var links = dummyElement.children
+            var link_one = links[0].href
+            var link_two = links[1].href
+
+            var source_name = decodedString.slice(0,20); // Link 1
+            var cc_by_sa = decodedString.slice(-34,-22); // Link 2
+            var via_commons = decodedString.slice(-21,); // Just text
+            
+            source = `<p class="overlay-source"><a href=${link_one}>${source_name}</a> <a href=${link_two}>${cc_by_sa}</a> ${via_commons}</p>`
+            return source
+        }
+
+        dummyElement.remove()
+        return source
+    }
+    else if (source_type == "link") {
+        source = `<p class="overlay-source">Source: <a href="${source}">Link</a></p>`
+        return source
+    }
+    else {
+        source = `<p class="overlay-source">Credit: ${source}</p>`
+        return source
+    }
 }

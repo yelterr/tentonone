@@ -11,7 +11,7 @@ app = Flask(__name__)
 gender_choice = "both"
 last_image = None
 
-db = "hotornot"
+db = "tentonone"
 db_connection = create_db_connection(credentials.host, credentials.username, credentials.passwd, db)
 
 # Loads the main menu
