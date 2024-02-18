@@ -3,7 +3,7 @@ import os
 import pathlib
 import random
 #from oursql import *
-#from send_email import send_email
+from send_email import send_email
 from urllib.parse import unquote
 from datetime import datetime
 
@@ -110,7 +110,7 @@ def contact():
 @app.route('/submit_form', methods=['POST'])
 def submit_form():
     form_data = request.form
-    #send_email(form_data)
+    send_email(form_data)
 
     return render_template("contact.html", form_submit=True)
 

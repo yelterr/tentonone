@@ -2,8 +2,8 @@ import mysql.connector
 from mysql.connector import Error
 import numpy as np
 
-from my_creds import SQL_Creds
-credentials = SQL_Creds()
+#from my_creds import SQL_Creds
+#credentials = SQL_Creds()
 
 
 def create_server_connection(host_name, user_name, user_password):
@@ -198,10 +198,10 @@ def print_all_rows(db_connection):
 
 # ----- TESTS -----
 
-db = "tentonone"
-db_connection = create_db_connection(credentials.host, credentials.username, credentials.passwd, db)
+#db = "tentonone"
+#db_connection = create_db_connection(credentials.host, credentials.username, credentials.passwd, db)
 
-print(get_individual_info(db_connection, "Eminem.jpg"))
+#print(get_individual_info(db_connection, "Eminem.jpg"))
 
 #      Adding rows
 #reset_ratings(db_connection)
