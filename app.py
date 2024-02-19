@@ -2,7 +2,7 @@ from flask import Flask, render_template, send_from_directory, request, jsonify,
 import os
 import pathlib
 import random
-#from oursql import *
+from oursql import *
 from send_email import send_email
 from urllib.parse import unquote
 from datetime import datetime
@@ -11,8 +11,8 @@ app = Flask(__name__)
 gender_choice = "both"
 last_image = None
 
-#db = "tentonone"
-#db_connection = create_db_connection(credentials.host, credentials.username, credentials.passwd, db)
+db = "tentonone"
+db_connection = create_db_connection(credentials.instance_conn_name, credentials.username, credentials.passwd, db)
 
 # Loads the main menu
 @app.route('/')
