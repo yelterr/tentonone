@@ -32,22 +32,18 @@
             flex-direction: column;
             align-items: center;
 
-            max-width: 400px;
-            margin-left: 10px;
-            margin-right: 10px;
+            width: 100%;
         }
 
         .about-a {
-        text-decoration:none;
-        color: #2287CD;
-        font-family: 'Roboto';
-        /*
-        padding-left: 20px;
-        */
-        padding-right: 0;
+            text-decoration:none;
+            color: #2287CD;
+            font-family: 'Roboto';
 
-        white-space: nowrap;
-    }
+            padding-right: 0;
+
+            white-space: nowrap;
+        }
 
         body {
             margin: 0;
@@ -64,6 +60,18 @@
             /* === */
         }
 
+        .main-div {
+            margin-top: 50px;
+            margin-bottom: 50px;
+
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+
+            width: 400px;
+            max-width: 90vw;
+        }
+
     </style>
 
 </head>
@@ -71,7 +79,7 @@
     <!-- Welcome to Ten to None -->
 
     {% include 'navbar.html' %}
-    <div style="display: flex; flex-direction: column; align-items: center;">
+    <div class="main-div">
         <div class="text-div">
             <h1>About</h1>
             <!-- <img style="height: 100px;" src="../images/logo.png"> -->
@@ -80,7 +88,6 @@
                 Ten to None lets you rate the attractiveness of celebrities on a scale of 0-10.
                 I built it because why not.
                 To make it as accurate as possible, I've made all votes anonymous.
-                I only data Ten to None collect are the date and the ratings of people.
                 The images are sourced from all over the internet, and cropped by an AI.
                 Also I'll be adding more images as time goes on, so look out for that.
                 <br><br>

@@ -67,19 +67,22 @@ def send_rating():
 
     link = data["image_path"]
     filename = extract_filepath(link)
+    filename = d_encode(filename, "encode")
 
     rating = float(data["slider_value"])
-    #add_rating(db_connection, filename, rating)
-    #rating_now = clean_num(get_current_rating(db_connection, filename))
-    rating_now = 5.5
+    print("This is the filename we are adding:")
+    print(filename)
+    add_rating(db_connection, filename, rating)
+    rating_now = clean_num(get_current_rating(db_connection, filename))
+    #rating_now = 5.5
 
     if rating_now == -1:
         rating_now = "[Error, please report this to us]"
 
-    #amt_raters = get_count(db_connection, filename)
-    amt_raters = 5
-    #ranking = get_ranking(db_connection, filename)
-    ranking = 1
+    amt_raters = get_count(db_connection, filename)
+    #amt_raters = 5
+    ranking = get_ranking(db_connection, filename)
+    #ranking = 1
 
     result = {"rating" : rating_now, "amt_raters" : amt_raters, "ranking" : ranking}
 
@@ -182,6 +185,9 @@ def get_random_image(gender_choice):
 def clean_num(num):
     to_clean = list(str(num))[::-1]
 
+    if (num == 10):
+        return 10
+
     # Clean the repeating numbers
     if len(to_clean) >= 7:
             if set(to_clean[1:4]) == set(to_clean[1]):
@@ -199,12 +205,13 @@ def clean_num(num):
     return float("".join(to_clean[::-1]))
 
 def get_filtered_lines():
-    #ratings = get_all_average_ratings(db_connection)
-    ratings = [(0, 0, 0, 0, 0, 0)]
+    ratings = get_all_average_ratings(db_connection)
+    #ratings = [(0, 0, 0, 0, 0, 0)]
     ratings = sorted(ratings, key=(lambda x : x[2]))[::-1]
 
     for i, rating in enumerate(ratings):
         rating = list(rating)
+        rating[0] = d_encode(rating[0], "decode")
         rating[2] = clean_num(rating[2])
         name, source = get_name(rating[0])
         rating.append(name)
@@ -222,12 +229,32 @@ def extract_filepath(filepath):
 def get_name(impath):
     filename = os.path.basename(impath).strip()
     filename = unquote(filename)
-    #results = get_individual_info(db_connection, filename)[0]
-    results = (10, "John", 0, 0, 0, "yourmom.com")
+    filename = d_encode(filename, "encode")
+    print("GET NAME FILENAME: ")
+    print(filename)
+    results = get_individual_info(db_connection, filename)[0]
+    #results = (10, "John", 0, 0, 0, "yourmom.com")
     _, name, _, _, _, source = results
+    name = d_encode(name, "decode")
+    source = d_encode(source, "decode")
     name = unquote(name)
 
     return name, source
+
+def d_encode(text, instruction):
+    if instruction == "encode":
+        before = ["-", "'", "ć", "č"]
+        after = ["ZZ", "XXXX", "YYY", "   "]
+    elif instruction == "decode":
+        before = ["ZZ", "XXXX", "YYY", "   "]
+        after = ["-", "'", "ć", "č"]
+    else:
+        return None
+
+    for i in range(4):
+        text = text.replace(before[i], after[i])
+
+    return text
 
 # Determines the type of the source so that I can link it correctly on the site.
 def determine_source_type(source):

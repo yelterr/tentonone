@@ -49,7 +49,7 @@ def add_rating(connection, filename, rating):
 
 # Retrieves the average rating of a specified filename
 def get_current_rating(db_connection, filename):
-    avg_query = f"SELECT AVG(rating) FROM ratings WHERE filename = \"{filename}\";"
+    avg_query = f"SELECT AVG(rating) FROM ratings WHERE filename = \'{filename}\';"
     result = read_query(db_connection, avg_query)
 
     if not result:
@@ -84,11 +84,11 @@ def get_ranking(db_connection, filename):
     return "[Error: please tell us about this]"
 
 def get_count(db_connection, filename):
-    q = f"SELECT COUNT(*) AS filename FROM ratings WHERE filename = \"{filename}\";"
+    q = f"SELECT COUNT(*) AS filename FROM ratings WHERE filename = \'{filename}\';"
     amt_raters = read_query(db_connection, q)[0][0]
     return amt_raters
 
 def get_individual_info(connection, filename):
-    search_query = f"SELECT * FROM names WHERE filename = \"{filename}\""
+    search_query = f"SELECT * FROM names WHERE filename = \'{filename}\'"
     results = read_query(connection, search_query)
     return results

@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- <link rel="icon" type="image/x-icon" href="../images/favicon.ico"> -->
     <link rel="icon" type="image/vnd.microsoft.icon" href="/favicon.ico">
 
     <!-- TODO: ADD AN EASTER EGG TO THIS PAGE (OR ALL, DEPENDS ON WHAT) -->
@@ -75,27 +76,23 @@
 
         .secondary-button:hover {
             background-color: #d9d9d9;
-            /* width: 240px; */
         }
 
         .secondary-button:active {
             background-color: #cccccc;
-            /* width: 240px; */
-            /* box-shadow: 0 2px #666;
-            transform: translateY(2px); */
         }
 
         p {
-            font-size: 22px;
+            font-size: 20px;
             font-family: 'Roboto', sans-serif;
             padding: 0;
             margin: 0;
         }
 
         .big-logo {    
-            width: 100%;
+            width: 650px;
             /* min-width: 350px; */
-            max-width: 650px;
+            max-width: 95vw;
             padding: 0;
 
             margin-top: 0;
@@ -109,6 +106,7 @@
             display: flex;
             flex-direction: column;
             align-items: center;
+            text-align: center;
             padding: 0;
             margin: 0;
             justify-content: space-between;
@@ -156,7 +154,7 @@
             <!--
             <img src="../images/notMyLogo.png" alt="Italian Trulli">
             -->
-            <p>Rate attractiveness on a scale of<span style="color: #FF0D0D; font-weight: 700;"> 0 </span>to<span style="color: #5F2AD0; font-weight: 700;"> 10</span></p>
+            <p style="width: 90vw; max-width: 650px;">Rate attractiveness on a scale of<span style="color: #FF0D0D; font-weight: 700;"> 0 </span>to<span style="color: #5F2AD0; font-weight: 700;"> 10</span></p>
             {% include 'dropdown.html' %}
         </div>
         

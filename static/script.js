@@ -334,7 +334,7 @@ function loadLeaderboard() {
 
                         <div class="name-and-raters">
                             <p class="name-txt" style="margin: 0; padding: 0;">${name}</p>
-                            <p style="margin: 0; padding: 0; font-size: 13px;">rated by ${amt_raters} ${persons}</p>
+                            <p class="rated-by">rated by ${amt_raters} ${persons}</p>
                         </div>
 
                         <div class="rating-div">
