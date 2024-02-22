@@ -1,21 +1,25 @@
-from google.cloud.sql.connector import Connector
+import mysql.connector
+from mysql.connector import Error
 import numpy as np
 
 from my_creds import SQL_Creds
 credentials = SQL_Creds()
 
-connector = Connector()
 
-def create_db_connection(instance_conn_name, user_name, user_password, db_name):
-    conn = connector.connect(
-        instance_conn_name,
-        "pytds",
-        user=user_name,
-        password=user_password,
-        db=db_name
-    )
-    return conn
+def create_db_connection(host_name, user_name, user_password, db_name):
+    connection = None
+    try:
+        connection = mysql.connector.connect(
+            host=host_name,
+            user=user_name,
+            passwd=user_password,
+            database=db_name
+        )
+        print("MySQL Database connection successful")
+    except Error as err:
+        print(f"Error: '{err}'")
 
+    return connection
 
 def execute_query(connection, query):
     cursor = connection.cursor()

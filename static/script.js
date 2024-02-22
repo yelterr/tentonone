@@ -315,6 +315,11 @@ function loadLeaderboard() {
                     var persons = "person";
                 }
 
+                var gorlock = "";
+                if (name == "Ali C. Lopez") {
+                    gorlock = "Gorlock the Destroyer"
+                }
+
                 const leaderboard_item = document.createElement("div");
                 leaderboard_item.dataset.category = gender
                 leaderboard_item.className = "leaderboard-element"
@@ -343,8 +348,9 @@ function loadLeaderboard() {
                                 <p class="out-of-ten" style="margin-top: 3px; padding: 0;">/10</p>
                             </div>
                         </div>
-
                     </div>
+
+                    <span style="display: none;">${gorlock}</span>
                     `
 
                 // Make initial filter dropdown changes

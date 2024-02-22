@@ -11,8 +11,11 @@ app = Flask(__name__)
 gender_choice = "both"
 last_image = None
 
-db = "tentonone"
-db_connection = create_db_connection(credentials.instance_conn_name, credentials.username, credentials.passwd, db)
+db = "ethangomez$tentonone"
+db_connection = create_db_connection(credentials.host, credentials.username, credentials.passwd, db)
+
+print(__file__)
+print(list(pathlib.Path("/home/ethangomez/tentonone/images").glob("*/*.jpg")))
 
 # Loads the main menu
 @app.route('/')
@@ -67,7 +70,6 @@ def send_rating():
 
     link = data["image_path"]
     filename = extract_filepath(link)
-    filename = d_encode(filename, "encode")
 
     rating = float(data["slider_value"])
     print("This is the filename we are adding:")
@@ -148,25 +150,27 @@ def sitemap():
             <lastmod>monthly</lastmod>
         </url>
     </urlset>"""
-    
+
     # Create a response with the XML content
     response = make_response(xml_content)
     response.headers['Content-Type'] = 'application/xml'
-    
+
     return response
 
 # Retrieves a random image path from the images directory
 def get_random_image(gender_choice):
     if gender_choice == "men":
-        all_men_images = list(pathlib.Path("images/").glob("men/*.jpg"))
+        all_men_images = list(pathlib.Path("/home/ethangomez/tentonone/images").glob("men/*.jpg"))
         random_impath = random.choice(all_men_images)
         chosen_image = str(random_impath)
     elif gender_choice == "women":
-        all_women_images = list(pathlib.Path("images/").glob("women/*.jpg"))
+        all_women_images = list(pathlib.Path("/home/ethangomez/tentonone/images").glob("women/*.jpg"))
         random_impath = random.choice(all_women_images)
         chosen_image = str(random_impath)
     else: # When gender_choice == "both" or any other circumstance
-        all_images = list(pathlib.Path("images/").glob("*/*.jpg"))
+        all_images = list(pathlib.Path("/home/ethangomez/tentonone/images").glob("*/*.jpg"))
+        #print("NEW PRINT STATEMENT")
+        #print(__file__)
         random_impath = random.choice(all_images)
         chosen_image = str(random_impath)
 
@@ -179,6 +183,7 @@ def get_random_image(gender_choice):
     # Test individual person
     #chosen_image = "images/men/Shaquille_O'Neal.jpg"
 
+    chosen_image = extract_filepath(chosen_image)
     return chosen_image
 
 # Cleans floats so that there are no unnecessary digits on the leaderboard
@@ -201,7 +206,7 @@ def clean_num(num):
             to_clean[i] = ""
         else:
             break
-    
+
     return float("".join(to_clean[::-1]))
 
 def get_filtered_lines():
@@ -211,7 +216,6 @@ def get_filtered_lines():
 
     for i, rating in enumerate(ratings):
         rating = list(rating)
-        rating[0] = d_encode(rating[0], "decode")
         rating[2] = clean_num(rating[2])
         name, source = get_name(rating[0])
         rating.append(name)
@@ -229,32 +233,12 @@ def extract_filepath(filepath):
 def get_name(impath):
     filename = os.path.basename(impath).strip()
     filename = unquote(filename)
-    filename = d_encode(filename, "encode")
-    print("GET NAME FILENAME: ")
-    print(filename)
     results = get_individual_info(db_connection, filename)[0]
     #results = (10, "John", 0, 0, 0, "yourmom.com")
     _, name, _, _, _, source = results
-    name = d_encode(name, "decode")
-    source = d_encode(source, "decode")
     name = unquote(name)
 
     return name, source
-
-def d_encode(text, instruction):
-    if instruction == "encode":
-        before = ["-", "'", "ć", "č"]
-        after = ["ZZ", "XXXX", "YYY", "   "]
-    elif instruction == "decode":
-        before = ["ZZ", "XXXX", "YYY", "   "]
-        after = ["-", "'", "ć", "č"]
-    else:
-        return None
-
-    for i in range(4):
-        text = text.replace(before[i], after[i])
-
-    return text
 
 # Determines the type of the source so that I can link it correctly on the site.
 def determine_source_type(source):
@@ -267,3 +251,5 @@ def determine_source_type(source):
 
 if __name__ == '__main__':
     app.run(host="127.0.0.1", port=8080, debug=True)
+    #print("Running!")
+    #print(get_random_image(gender_choice))
