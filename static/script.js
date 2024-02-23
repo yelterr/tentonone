@@ -17,10 +17,19 @@ function startGame() {
 
 // Changes the image (game.html)
 function loadImage() {
-    updateGenderChoice();
-    fetch('/get_image')
-        .then(response => response.json())
-        .then(data => {
+    var genderChoice = localStorage.getItem("selectedOption");
+    console.log("Load image gender choice: ")
+    console.log(genderChoice)
+
+    fetch('/get_image', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ 'gender_choice': genderChoice }),
+    })
+    .then(response => response.json())
+    .then(data => {
             const url = data.result.impath;
             const name = data.result.name;
             var source = data.result.source;
@@ -40,11 +49,6 @@ function loadImage() {
 // Handles the "next" page when a user submits.
 function showAndRemoveNext() {
     var button = document.getElementById("gameButton");
-    var submit_div = document.getElementById("submit_div");
-    var results_div = document.getElementById("results_div");
-
-    var slider = document.getElementById("rating_slider");
-    var textInput = document.getElementById("textInput");
 
     // Changes Button Text
     if (button.innerText.slice(0, 6) === "Submit") {
@@ -67,7 +71,6 @@ function makeSubmit() {
     var slider = document.getElementById("rating_slider");
     var textInput = document.getElementById("textInput");
     
-    updateGenderChoice();
     loadImage();
     button.innerHTML = "Submit <span id='final-number'></span>/10"
     slider.value = 5
@@ -149,8 +152,10 @@ function sendRating() {
 
 // Keeps the dropdown consistent between pages
 function saveSelectedOption() {
+    console.log("saveSelectedOption() ran...")
     var dropdown = document.getElementById("myDropdown");
     var selectedValue = dropdown.value;
+    console.log(selectedValue)
 
     const choices = ["both", "men", "women"]
     if (!choices.includes(selectedValue)) {
@@ -171,6 +176,7 @@ window.onload = function () {
     const choices = ["both", "men", "women"]
 
     if (!selectedValue || !choices.includes(selectedValue)) {
+        console.log("Setting value to both...")
         selectedValue = "both";
         localStorage.setItem("selectedOption", selectedValue);
         updateGenderChoice();
@@ -181,6 +187,8 @@ window.onload = function () {
 
 function updateGenderChoice() {
     var genderChoice = localStorage.getItem("selectedOption");
+    console.log("Running updateGenderChoice()...")
+    console.log(genderChoice)
 
     const choices = ["both", "men", "women"]
     if (!choices.includes(genderChoice)) {
@@ -195,6 +203,8 @@ function updateGenderChoice() {
         },
         body: JSON.stringify({ 'gender_choice':  genderChoice}),
     });
+
+    console.log("Done!")
 }
 
 // Whenever the gender dropdown changes, make changes depending on the page
@@ -211,20 +221,18 @@ function makeGenderDropdownChanges() {
     // If we are in game
     if (currentPath == "/rate") {
         var impath = document.getElementById("loadedImage").src
-    
+
         // Check if an image change is needed
         if (dropdownValue == "both") {
             ;
         }
         else if (dropdownValue == "women") {
             if (!(impath.includes("/women"))) {
-                //loadImage();
                 makeSubmit();
             }
         }
         else if (dropdownValue == "men") {
             if (!(impath.includes("/men"))) {
-                //loadImage();
                 makeSubmit();
             }
         }

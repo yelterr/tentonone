@@ -9,13 +9,12 @@ from datetime import datetime
 
 app = Flask(__name__)
 gender_choice = "both"
+print("PYTHON FILE RUNNING =====================================================================")
 last_image = None
 
 db = "ethangomez$tentonone"
 db_connection = create_db_connection(credentials.host, credentials.username, credentials.passwd, db)
-
-print(__file__)
-print(list(pathlib.Path("/home/ethangomez/tentonone/images").glob("*/*.jpg")))
+db_connection = guarantee_db_connection(db_connection)
 
 # Loads the main menu
 @app.route('/')
@@ -49,9 +48,11 @@ def leaderboard():
     return render_template("leaderboard.html")
 
 # Provides the Javascript function with a random image
-@app.route("/get_image")
+@app.route("/get_image", methods=["POST"])
 def get_image():
-    image_path = get_random_image(gender_choice)
+    data = request.get_json()
+    new_gender_choice = data["gender_choice"]
+    image_path = get_random_image(new_gender_choice)
     global last_image
     last_image = image_path
 
@@ -72,8 +73,10 @@ def send_rating():
     filename = extract_filepath(link)
 
     rating = float(data["slider_value"])
-    print("This is the filename we are adding:")
-    print(filename)
+
+    global db_connection
+    db_connection = guarantee_db_connection(db_connection)
+
     add_rating(db_connection, filename, rating)
     rating_now = clean_num(get_current_rating(db_connection, filename))
     #rating_now = 5.5
@@ -96,6 +99,7 @@ def update_gender_choice():
     data = request.get_json()
     global gender_choice
     gender_choice = data["gender_choice"]
+    print("Gender Changed to...", gender_choice)
     return "It worked"
 
 @app.route("/retrieve_ratings")
@@ -159,6 +163,7 @@ def sitemap():
 
 # Retrieves a random image path from the images directory
 def get_random_image(gender_choice):
+    print("Choosing a...", gender_choice)
     if gender_choice == "men":
         all_men_images = list(pathlib.Path("/home/ethangomez/tentonone/images").glob("men/*.jpg"))
         random_impath = random.choice(all_men_images)
@@ -210,6 +215,9 @@ def clean_num(num):
     return float("".join(to_clean[::-1]))
 
 def get_filtered_lines():
+    global db_connection
+    db_connection = guarantee_db_connection(db_connection)
+
     ratings = get_all_average_ratings(db_connection)
     #ratings = [(0, 0, 0, 0, 0, 0)]
     ratings = sorted(ratings, key=(lambda x : x[2]))[::-1]
@@ -231,12 +239,16 @@ def extract_filepath(filepath):
 
 # Also gets source. Just keep the name the same to confuse you in the future lol.
 def get_name(impath):
+    global db_connection
+    db_connection = guarantee_db_connection(db_connection)
+
     filename = os.path.basename(impath).strip()
     filename = unquote(filename)
     results = get_individual_info(db_connection, filename)[0]
     #results = (10, "John", 0, 0, 0, "yourmom.com")
     _, name, _, _, _, source = results
     name = unquote(name)
+    print("Getting name for...", name)
 
     return name, source
 
