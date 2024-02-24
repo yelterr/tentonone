@@ -8,8 +8,6 @@ from urllib.parse import unquote
 from datetime import datetime
 
 app = Flask(__name__)
-gender_choice = "both"
-print("PYTHON FILE RUNNING =====================================================================")
 last_image = None
 
 db = "ethangomez$tentonone"
@@ -33,15 +31,8 @@ def favicon():
 
 # Begins the game by loading the game template and providing the first image
 @app.route('/rate')
-def start_game():
-    random_image = get_random_image(gender_choice)
-    name, source = get_name(random_image)
-    source_type = determine_source_type(source)
-
-    global last_image
-    last_image = random_image
-
-    return render_template("game.html", random_image=random_image, name=name, source=source, source_type=source_type)
+def rate():
+    return render_template("rate.html")
 
 @app.route("/leaderboard")
 def leaderboard():
@@ -51,8 +42,8 @@ def leaderboard():
 @app.route("/get_image", methods=["POST"])
 def get_image():
     data = request.get_json()
-    new_gender_choice = data["gender_choice"]
-    image_path = get_random_image(new_gender_choice)
+    gender_choice = data["gender_choice"]
+    image_path = get_random_image(gender_choice)
     global last_image
     last_image = image_path
 
@@ -92,15 +83,6 @@ def send_rating():
     result = {"rating" : rating_now, "amt_raters" : amt_raters, "ranking" : ranking}
 
     return jsonify(result=result)
-
-# Updates the gender_choice variable
-@app.route("/update_gender_choice", methods=["POST"])
-def update_gender_choice():
-    data = request.get_json()
-    global gender_choice
-    gender_choice = data["gender_choice"]
-    print("Gender Changed to...", gender_choice)
-    return "It worked"
 
 @app.route("/retrieve_ratings")
 def retrieve_the_ratings():
@@ -163,7 +145,6 @@ def sitemap():
 
 # Retrieves a random image path from the images directory
 def get_random_image(gender_choice):
-    print("Choosing a...", gender_choice)
     if gender_choice == "men":
         all_men_images = list(pathlib.Path("/home/ethangomez/tentonone/images").glob("men/*.jpg"))
         random_impath = random.choice(all_men_images)

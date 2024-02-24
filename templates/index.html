@@ -160,7 +160,7 @@
         
         
         <div class="button-container">
-            <button id="startButton" class="gradient-button" onclick="startGame()">Rate People</button>
+            <button id="startButton" class="gradient-button" onclick="window.location.href='{{ url_for('rate') }}'">Rate People</button>
             <button onclick="window.location.href='{{ url_for('leaderboard') }}'" class="secondary-button">Leaderboard</button>
             <button onclick="window.location.href='{{ url_for('about') }}'" class="secondary-button">About</button>
         </div>

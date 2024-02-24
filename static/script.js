@@ -1,25 +1,6 @@
-// Starts the rating from a button
-function startGame() {
-    updateGenderChoice();
-    fetch('/rate')
-        .then(response => {
-            if (response.ok) {
-                // If the response is successful, navigate to the new page
-                window.location.href = '/rate';
-            } else {
-                console.error('Failed to invoke Python function');
-            }
-        })
-        .catch(error => {
-            console.error('Error invoking Python function:', error);
-    });
-}
-
 // Changes the image (game.html)
 function loadImage() {
     var genderChoice = localStorage.getItem("selectedOption");
-    console.log("Load image gender choice: ")
-    console.log(genderChoice)
 
     fetch('/get_image', {
         method: 'POST',
@@ -179,38 +160,14 @@ window.onload = function () {
         console.log("Setting value to both...")
         selectedValue = "both";
         localStorage.setItem("selectedOption", selectedValue);
-        updateGenderChoice();
     }
 
     dropdown.value = selectedValue;
 }
 
-function updateGenderChoice() {
-    var genderChoice = localStorage.getItem("selectedOption");
-    console.log("Running updateGenderChoice()...")
-    console.log(genderChoice)
-
-    const choices = ["both", "men", "women"]
-    if (!choices.includes(genderChoice)) {
-        genderChoice = "both";
-        localStorage.setItem("selectedOption", genderChoice);
-    }
-
-    fetch('/update_gender_choice', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ 'gender_choice':  genderChoice}),
-    });
-
-    console.log("Done!")
-}
-
 // Whenever the gender dropdown changes, make changes depending on the page
 function makeGenderDropdownChanges() {
     saveSelectedOption();
-    updateGenderChoice();
     // #1: Check what page I am on to decide what I have to update.
     // #2: If Main Menu, continue.
     // #3: If Rating Page, then check if image does not match with gender choice. If it does, continue. If it doesn't, change it.
@@ -272,8 +229,6 @@ function makeFilterDropdownChanges() {
 }
 
 function loadLeaderboard() {
-    updateGenderChoice();
-
     var genderChoice = localStorage.getItem("selectedOption");
     var filterChoice = document.getElementById("filterDropdown").value;
     current_filter = filterChoice;
