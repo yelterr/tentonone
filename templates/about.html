@@ -2,6 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="icon" type="image/vnd.microsoft.icon" href="/favicon.ico">
 
     <title>About – Ten to None</title>
@@ -31,22 +32,18 @@
             flex-direction: column;
             align-items: center;
 
-            max-width: 400px;
-            margin-left: 10px;
-            margin-right: 10px;
+            width: 100%;
         }
 
         .about-a {
-        text-decoration:none;
-        color: #2287CD;
-        font-family: 'Roboto';
-        /*
-        padding-left: 20px;
-        */
-        padding-right: 0;
+            text-decoration:none;
+            color: #2287CD;
+            font-family: 'Roboto';
 
-        white-space: nowrap;
-    }
+            padding-right: 0;
+
+            white-space: nowrap;
+        }
 
         body {
             margin: 0;
@@ -63,6 +60,18 @@
             /* === */
         }
 
+        .main-div {
+            margin-top: 50px;
+            margin-bottom: 50px;
+
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+
+            width: 400px;
+            max-width: 95vh;
+        }
+
     </style>
 
 </head>
@@ -70,7 +79,7 @@
     <!-- Welcome to Ten to None -->
 
     {% include 'navbar.html' %}
-    <div style="display: flex; flex-direction: column; align-items: center;">
+    <div class="main-div">
         <div class="text-div">
             <h1>About</h1>
             <!-- <img style="height: 100px;" src="../images/logo.png"> -->

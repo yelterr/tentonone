@@ -2,6 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="icon" type="image/vnd.microsoft.icon" href="/favicon.ico">
 
     <title>Contact Us – Ten to None</title>
@@ -28,8 +29,8 @@
         }
 
         form {
-            min-width: 400px;
-            margin: 0 auto;
+            width: 100%;
+            /* margin: 0 auto; */
         }
 
         label {
@@ -89,20 +90,28 @@
 
         .gradient-button:hover {
             background-image: linear-gradient(to right, hsl(259, 66%, 55%), hsl(0, 100%, 59%));
-            /* width: 240px; */
         }
 
         .gradient-button:active {
             background-image: linear-gradient(to right, hsl(259, 66%, 60%), hsl(0, 100%, 64%));
-            /* width: 240px; */
-            /* box-shadow: 0 2px #666;
-            transform: translateY(2px); */
         }
 
         .result-text {
             display: none;
             font-family: Roboto, sans-serif;
             font-size: 18px;
+        }
+
+        .main-div {
+            margin-top: 50px;
+            margin-bottom: 50px;
+            
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+
+            width: 400px;
+            max-width: 95vw;
         }
 
     </style>
@@ -113,7 +122,7 @@
 
     {% include 'navbar.html' %}
     
-    <div style="display: flex; flex-direction: column; align-items: center;">
+    <div class="main-div">
         <h1>Contact Us</h1>
 
         <form action="{{ url_for('submit_form') }}" method="post">

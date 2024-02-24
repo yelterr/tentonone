@@ -75,27 +75,23 @@
 
         .secondary-button:hover {
             background-color: #d9d9d9;
-            /* width: 240px; */
         }
 
         .secondary-button:active {
             background-color: #cccccc;
-            /* width: 240px; */
-            /* box-shadow: 0 2px #666;
-            transform: translateY(2px); */
         }
 
         p {
-            font-size: 22px;
+            font-size: 20px;
             font-family: 'Roboto', sans-serif;
             padding: 0;
             margin: 0;
         }
 
         .big-logo {    
-            width: 100%;
+            width: 650px;
             /* min-width: 350px; */
-            max-width: 650px;
+            max-width: 95vw;
             padding: 0;
 
             margin-top: 0;
@@ -109,6 +105,7 @@
             display: flex;
             flex-direction: column;
             align-items: center;
+            text-align: center;
             padding: 0;
             margin: 0;
             justify-content: space-between;
@@ -156,13 +153,13 @@
             <!--
             <img src="../images/notMyLogo.png" alt="Italian Trulli">
             -->
-            <p>Rate attractiveness on a scale of<span style="color: #FF0D0D; font-weight: 700;"> 0 </span>to<span style="color: #5F2AD0; font-weight: 700;"> 10</span></p>
+            <p style="width: 90vw; max-width: 650px;">Rate attractiveness on a scale of<span style="color: #FF0D0D; font-weight: 700;"> 0 </span>to<span style="color: #5F2AD0; font-weight: 700;"> 10</span></p>
             {% include 'dropdown.html' %}
         </div>
         
         
         <div class="button-container">
-            <button id="startButton" class="gradient-button" onclick="startGame()">Rate People</button>
+            <button id="startButton" class="gradient-button" onclick="window.location.href='{{ url_for('rate') }}'">Rate People</button>
             <button onclick="window.location.href='{{ url_for('leaderboard') }}'" class="secondary-button">Leaderboard</button>
             <button onclick="window.location.href='{{ url_for('about') }}'" class="secondary-button">About</button>
         </div>

@@ -171,6 +171,7 @@
             display: flex;
             flex-direction: row;
             justify-content: space-between;
+            align-items: center;
 
             margin-top: 10px;
             margin-bottom: 10px;
@@ -251,7 +252,6 @@
             /* === */
         }
 
-
         /*
         Styling the Rating Slider:
         https://stackoverflow.com/questions/18389224/how-to-style-html5-range-input-to-have-different-color-before-and-after-slider
@@ -263,7 +263,6 @@
             margin-left: 10px;
             margin-right: 10px;
 
-            /* width: 75%; */
             width: 100%;
             box-sizing: border-box; /* Include padding in the width */
 
@@ -275,10 +274,10 @@
         }
         input[type='range']::-webkit-slider-runnable-track {
             -webkit-appearance: none;
-            margin-left: 10px;
-            margin-right: 10px;
+            overflow: hidden;
+            margin-left: 0;
+            margin-right: 0;
 
-            /* width: 75%; */
             width: 100%;
             box-sizing: border-box; /* Include padding in the width */
 
@@ -291,6 +290,8 @@
         /* Thumb */
         input[type='range']::-webkit-slider-thumb {
             -webkit-appearance: none;
+            margin-top: -2.5px;
+            box-shadow: -315px 0 0 300px #5F2AD0;
 
             border-radius: 100px;
             border: 3px solid white;
@@ -379,7 +380,7 @@
 
         <div class="card-div">
             <div class="image-div">
-                <img class="face" id="loadedImage" src="{{ random_image }}" alt="Random Image">
+                <img class="face" id="loadedImage" alt="Random Image">
                 <div class="img-gradient-overlay"></div>
                 <p class="overlay-text" id="name-overlay">Person's Name</p>
                 <div id="source-element"></div>
@@ -425,49 +426,10 @@
 
     
     <script>
-        var name = "{{ name }}".replace(/&#(\d+);/g, function(match, dec) {
-            return String.fromCharCode(dec);
+        document.addEventListener('DOMContentLoaded', function() {
+            makeSubmit();
         });
         
-        document.getElementById("name-overlay").innerText = name
-        document.getElementById("name-bottom").innerText = name
-        document.getElementById("name_result").innerText = name
-
-        // Putting First Source on Page
-        var source_element = document.getElementById("source-element");
-        var source_type = "{{ source_type }}"
-        var source = "{{ source }}"
-
-        if (source_type == "wiki") {
-            // Decode the <> signs
-            var dummyElement = document.createElement('div');
-            dummyElement.innerHTML = source;
-            var decodedString = dummyElement.innerText;
-
-            source_element.innerHTML = `<p class="overlay-source">${decodedString}</p>`
-            if (source_element.innerText.length > 64) {
-                var links = source_element.children[0].children
-                var link_one = links[0].href
-                var link_two = links[1].href
-
-                var name = source_element.innerText.slice(0,20); // Link 1
-                var cc_by_sa = source_element.innerText.slice(-34,-22); // Link 2
-                var via_commons = source_element.innerText.slice(-21,); // Just text
-                
-                var new_html = `<p class="overlay-source"><a href=${link_one}>${name}</a> <a href=${link_two}>${cc_by_sa}</a> ${via_commons}</p>`
-                source_element.innerHTML = new_html;
-            }
-            
-            //console.log(source_element.innerHTML)
-        }
-        else if (source_type == "link") {
-            var wiki_source = `<p class="overlay-source">Source: <a href="${source}">Link</a></p>`
-            source_element.innerHTML = wiki_source;
-        }
-        else {
-            source_element.innerText = `<p class="overlay-source">Credit: ${source}</p>`
-        }
-
         // Gets the value of the rating slider (game.html)
         var slider = document.getElementById("rating_slider");
         var textInput = document.getElementById("textInput");

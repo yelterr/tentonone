@@ -20,29 +20,32 @@
             .name-txt {
                 font-size: 18px; /* Adjust font size for smaller screens */
             }
+            .rated-by {
+                font-size: 11px;
+            }
             .number-txt {
                 font-size: 21px;
             }
             .name-and-raters {
-                left: 90px;
+                left: 22%;
             }
             .has-the-numbers {
                 margin-right: 10px;
             }
             .position-txt {
-                font-size: 25px;
+                font-size: 20px;
             }
             .out-of-ten {
                 font-size: 10px;
             }
             .leaderboard-background {
                 padding-right: 10px;
-                width: var(--width);
-                min-width: var(--minimum-width);
+                width: 90vw;
+                /* min-width: var(--minimum-width); */
             }
             .dropdowns-div, .search-bar {
-                width: var(--width);
-                min-width: 410px;
+                width: 92vw;
+                /* min-width: 410px; */
             }
         }
 
@@ -50,11 +53,14 @@
             .name-txt {
                 font-size: 24px;
             }
+            .rated-by {
+                font-size: 13px;
+            }
             .number-txt {
                 font-size: 26px;
             }
             .name-and-raters {
-                left: 118.5px;
+                left: 23%;
             }
             .has-the-numbers {
                 margin-right: 30px;
@@ -80,6 +86,9 @@
             .name-txt {
                 font-size: 30px;
             }
+            .rated-by {
+                font-size: 13px;
+            }
             .number-txt {
                 font-size: 35px;
             }
@@ -97,19 +106,13 @@
             }
             .leaderboard-background {
                 padding-right: 30px;
-                min-width: 650px;
+                min-width: 800px;
                 width: var(--width);
             }
             .dropdowns-div, .search-bar {
                 width: 42.4%;
-                min-width: 680px;
+                min-width: 830px;
             }
-        }
-
-
-        div {
-            padding: 0;
-            margin: 0;
         }
 
         .leaderboard-div {
@@ -305,6 +308,8 @@
             margin: 0;
             padding: 0;
 
+            width: 90vw;
+
             margin-top: 120px;
         }
 
@@ -315,9 +320,16 @@
             /* NEW */
             min-height: 100vh;
             position: relative;
-            /* === */
 
-            
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            /* === */
+        }
+
+        .rated-by {
+            margin: 0;
+            padding: 0;
         }
 
     </style>
@@ -350,33 +362,26 @@
 
         <div id="leaderboard-background" class="leaderboard-background">
 
-            <!-- <ul id="leaderboard_list"></ul> -->
+            <!-- ======================================
 
 
-            <!-- TODO - EASTER EGG?!?!??!!?!?!?? -->
-            <!-- This is what you have to add per line
+            <div class="position-div">
+                <p class="position-txt" id="position-txt">${i+1}</p>
+            </div>
 
-            <div class="leaderboard-element">
+            <div class="not-position-div">
+                <img class="leaderboard-img" src="${impath}" loading="lazy">
 
-                <div class="position-div">
-                    <p style="font-size: 40px;">99</p>
+                <div class="name-and-raters">
+                    <p class="name-txt" style="margin: 0; padding: 0;">${name}</p>
+                    <p class="rated-by">rated by ${amt_raters} ${persons}</p>
                 </div>
 
-                <div class="not-position-div">
-                    <img class="leaderboard-img" src="../images/men/elon_musk.jpg">
-
-                    <div class="name-and-raters">
-                        <p style="margin: 0; padding: 0; font-size: 30px;">Elon Musk</p>
-                        <p style="margin: 0; padding: 0; font-size: 13px;">rated by 1,234 people</p>
+                <div class="rating-div">
+                    <div class="has-the-numbers">
+                        <p class="number-txt" style="margin: 0; padding: 0;">${rating}</p>
+                        <p class="out-of-ten" style="margin-top: 3px; padding: 0;">/10</p>
                     </div>
-
-                    <div class="rating-div">
-                        <div class="has-the-numbers">
-                            <p style="margin: 0; padding: 0; font-size: 35px;">9.38</p>
-                            <p style="margin-top: 3px; padding: 0; font-size: 15px;">/10</p>
-                        </div>
-                    </div>
-
                 </div>
 
             </div>

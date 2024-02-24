@@ -8,11 +8,11 @@ from urllib.parse import unquote
 from datetime import datetime
 
 app = Flask(__name__)
-gender_choice = "both"
 last_image = None
 
 db = "tentonone"
 db_connection = create_db_connection(credentials.host, credentials.username, credentials.passwd, db)
+db_connection = guarantee_db_connection(db_connection)
 
 # Loads the main menu
 @app.route('/')
@@ -31,24 +31,19 @@ def favicon():
 
 # Begins the game by loading the game template and providing the first image
 @app.route('/rate')
-def start_game():
-    random_image = get_random_image(gender_choice)
-    name, source = get_name(random_image)
-    source_type = determine_source_type(source)
-
-    global last_image
-    last_image = random_image
-
-    return render_template("game.html", random_image=random_image, name=name, source=source, source_type=source_type)
+def rate():
+    return render_template("game.html")
 
 @app.route("/leaderboard")
 def leaderboard():
     return render_template("leaderboard.html")
 
 # Provides the Javascript function with a random image
-@app.route("/get_image")
+@app.route("/get_image", methods=["POST"])
 def get_image():
-    image_path = get_random_image(gender_choice)
+    data = request.get_json()
+    new_gender_choice = data["gender_choice"]
+    image_path = get_random_image(new_gender_choice)
     global last_image
     last_image = image_path
 
@@ -69,26 +64,25 @@ def send_rating():
     filename = extract_filepath(link)
 
     rating = float(data["slider_value"])
+
+    global db_connection
+    db_connection = guarantee_db_connection(db_connection)
+
     add_rating(db_connection, filename, rating)
     rating_now = clean_num(get_current_rating(db_connection, filename))
+    #rating_now = 5.5
 
     if rating_now == -1:
         rating_now = "[Error, please report this to us]"
 
     amt_raters = get_count(db_connection, filename)
+    #amt_raters = 5
     ranking = get_ranking(db_connection, filename)
+    #ranking = 1
 
     result = {"rating" : rating_now, "amt_raters" : amt_raters, "ranking" : ranking}
 
     return jsonify(result=result)
-
-# Updates the gender_choice variable
-@app.route("/update_gender_choice", methods=["POST"])
-def update_gender_choice():
-    data = request.get_json()
-    global gender_choice
-    gender_choice = data["gender_choice"]
-    return "It worked"
 
 @app.route("/retrieve_ratings")
 def retrieve_the_ratings():
@@ -142,25 +136,27 @@ def sitemap():
             <lastmod>monthly</lastmod>
         </url>
     </urlset>"""
-    
+
     # Create a response with the XML content
     response = make_response(xml_content)
     response.headers['Content-Type'] = 'application/xml'
-    
+
     return response
 
 # Retrieves a random image path from the images directory
 def get_random_image(gender_choice):
     if gender_choice == "men":
-        all_men_images = list(pathlib.Path("images/").glob("men/*.jpg"))
+        all_men_images = list(pathlib.Path("images").glob("men/*.jpg"))
         random_impath = random.choice(all_men_images)
         chosen_image = str(random_impath)
     elif gender_choice == "women":
-        all_women_images = list(pathlib.Path("images/").glob("women/*.jpg"))
+        all_women_images = list(pathlib.Path("images").glob("women/*.jpg"))
         random_impath = random.choice(all_women_images)
         chosen_image = str(random_impath)
     else: # When gender_choice == "both" or any other circumstance
-        all_images = list(pathlib.Path("images/").glob("*/*.jpg"))
+        all_images = list(pathlib.Path("images").glob("*/*.jpg"))
+        #print("NEW PRINT STATEMENT")
+        #print(__file__)
         random_impath = random.choice(all_images)
         chosen_image = str(random_impath)
 
@@ -173,11 +169,15 @@ def get_random_image(gender_choice):
     # Test individual person
     #chosen_image = "images/men/Shaquille_O'Neal.jpg"
 
+    chosen_image = extract_filepath(chosen_image)
     return chosen_image
 
 # Cleans floats so that there are no unnecessary digits on the leaderboard
 def clean_num(num):
     to_clean = list(str(num))[::-1]
+
+    if (num == 10):
+        return 10
 
     # Clean the repeating numbers
     if len(to_clean) >= 7:
@@ -192,11 +192,15 @@ def clean_num(num):
             to_clean[i] = ""
         else:
             break
-    
+
     return float("".join(to_clean[::-1]))
 
 def get_filtered_lines():
+    global db_connection
+    db_connection = guarantee_db_connection(db_connection)
+
     ratings = get_all_average_ratings(db_connection)
+    #ratings = [(0, 0, 0, 0, 0, 0)]
     ratings = sorted(ratings, key=(lambda x : x[2]))[::-1]
 
     for i, rating in enumerate(ratings):
@@ -216,11 +220,16 @@ def extract_filepath(filepath):
 
 # Also gets source. Just keep the name the same to confuse you in the future lol.
 def get_name(impath):
+    global db_connection
+    db_connection = guarantee_db_connection(db_connection)
+
     filename = os.path.basename(impath).strip()
     filename = unquote(filename)
     results = get_individual_info(db_connection, filename)[0]
+    #results = (10, "John", 0, 0, 0, "yourmom.com")
     _, name, _, _, _, source = results
     name = unquote(name)
+    print("Getting name for...", name)
 
     return name, source
 
@@ -235,3 +244,5 @@ def determine_source_type(source):
 
 if __name__ == '__main__':
     app.run(debug=True)
+    #print("Running!")
+    #print(get_random_image(gender_choice))

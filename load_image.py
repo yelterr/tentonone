@@ -126,7 +126,7 @@ if __name__ == "__main__":
     '''   
 
     #replace_image("/home/ethan/Pictures/unedited_photos/women/Valkyrae.jpg", "women")
-    #edit_name(db_connection, original_name="Valkyrae", new_og_filename="IDC", new_source="https://www.theloadout.com/game-awards-2020-winners-esports")
+    #edit_name(db_connection, original_name="Greta Gerwig", new_source='<a href="https://commons.wikimedia.org/wiki/File:Greta_Gerwig_at_Barbie_Movie_Reception_(headshot).jpg">UKinUSA</a>, <a href="https://creativecommons.org/licenses/by-sa/2.5">CC BY-SA 2.5</a>, via Wikimedia Commons')
     
     print("All done!")
         
