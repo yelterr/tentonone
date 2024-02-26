@@ -173,28 +173,6 @@ def get_random_image(gender_choice):
     return chosen_image
 
 # Cleans floats so that there are no unnecessary digits on the leaderboard
-def old_clean_num(num):
-    to_clean = list(str(num))[::-1]
-
-    if (num == 10):
-        return 10
-
-    # Clean the repeating numbers
-    if len(to_clean) >= 7:
-            if set(to_clean[1:4]) == set(to_clean[1]):
-                if int(to_clean[0]) == int(to_clean[1]) + 1 or int(to_clean[0]) == int(to_clean[1]):
-                    to_clean.pop(1)
-                    to_clean.pop(2)
-                    return float("".join(to_clean[::-1]))
-
-    for i, digit in enumerate(to_clean):
-        if digit == "0":
-            to_clean[i] = ""
-        else:
-            break
-
-    return float("".join(to_clean[::-1]))
-
 def clean_num(num):
     to_clean = list(str(num))[::-1]
 
