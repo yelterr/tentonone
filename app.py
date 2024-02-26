@@ -50,6 +50,8 @@ def get_image():
     data = request.get_json()
     gender_choice = data["gender_choice"]
     sessionID = data["sessionID"]
+    if len(sessionID) > 30:
+        sessionID = sessionID[:30]
 
     image_path = get_random_image(gender_choice, sessionID)
 
@@ -71,6 +73,8 @@ def send_rating():
 
     rating = float(data["slider_value"])
     sessionID = data["sessionID"]
+    if len(sessionID) > 30:
+        sessionID = sessionID[:30]
 
     global db_connection
     db_connection = guarantee_db_connection(db_connection)
