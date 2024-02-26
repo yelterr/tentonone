@@ -8,7 +8,13 @@ from urllib.parse import unquote
 from datetime import datetime
 
 app = Flask(__name__)
-last_image = None
+amt_unique = 150
+
+all_men_images = list(pathlib.Path("images").glob("men/*.jpg"))
+all_men_images = [str(filepath) for filepath in all_men_images]
+
+all_women_images = list(pathlib.Path("images").glob("women/*.jpg"))
+all_women_images = [str(filepath) for filepath in all_women_images]
 
 db = "ethangomez$tentonone"
 db_connection = create_db_connection(credentials.host, credentials.username, credentials.passwd, db)
@@ -43,9 +49,9 @@ def leaderboard():
 def get_image():
     data = request.get_json()
     gender_choice = data["gender_choice"]
-    image_path = get_random_image(gender_choice)
-    global last_image
-    last_image = image_path
+    sessionID = data["sessionID"]
+
+    image_path = get_random_image(gender_choice, sessionID)
 
     name, source = get_name(image_path)
     source_type = determine_source_type(source)
@@ -64,11 +70,12 @@ def send_rating():
     filename = extract_filepath(link)
 
     rating = float(data["slider_value"])
+    sessionID = data["sessionID"]
 
     global db_connection
     db_connection = guarantee_db_connection(db_connection)
 
-    add_rating(db_connection, filename, rating)
+    add_rating(db_connection, sessionID, filename, rating)
     rating_now = clean_num(get_current_rating(db_connection, filename))
     #rating_now = 5.5
 
@@ -144,32 +151,40 @@ def sitemap():
     return response
 
 # Retrieves a random image path from the images directory
-def get_random_image(gender_choice):
-    if gender_choice == "men":
-        all_men_images = list(pathlib.Path("/home/ethangomez/tentonone/images").glob("men/*.jpg"))
-        random_impath = random.choice(all_men_images)
-        chosen_image = str(random_impath)
-    elif gender_choice == "women":
-        all_women_images = list(pathlib.Path("/home/ethangomez/tentonone/images").glob("women/*.jpg"))
-        random_impath = random.choice(all_women_images)
-        chosen_image = str(random_impath)
-    else: # When gender_choice == "both" or any other circumstance
-        all_images = list(pathlib.Path("/home/ethangomez/tentonone/images").glob("*/*.jpg"))
-        #print("NEW PRINT STATEMENT")
-        #print(__file__)
-        random_impath = random.choice(all_images)
-        chosen_image = str(random_impath)
+def get_random_image(gender_choice, sessionID):
+    # Clearing last images from choices of men and women
+    past_images_query = f"SELECT DISTINCT filename FROM ratings WHERE sessionID = '{sessionID}';"
 
-    # Making sure that the new image is not the same as the last image (rare, but just in case)
-    while chosen_image == last_image:
-        print(f"Filename: {chosen_image}")
-        print(f"Last Image: {last_image}")
-        chosen_image = get_random_image(gender_choice)
+    global db_connection
+    db_connection = guarantee_db_connection(db_connection)
+
+    past_images = read_query(db_connection, past_images_query)
+    past_images = [image[0] for image in past_images]
+
+    rated_men = [filename for filename in past_images if filename in all_men_images]
+    if len(rated_men) > amt_unique:
+        rated_men = rated_men[-amt_unique:]
+    rated_women = [filename for filename in past_images if filename in all_women_images]
+    if len(rated_women) > amt_unique:
+        rated_women = rated_women[-amt_unique:]
+
+    unrated_men = list(set(all_men_images) - set(rated_men))
+    unrated_women = list(set(all_women_images) - set(rated_women))
+
+    if gender_choice == "men":
+        random_impath = random.choice(unrated_men)
+
+    elif gender_choice == "women":
+        random_impath = random.choice(unrated_women)
+
+    else: # When gender_choice == "both" or any other circumstance
+        all_images = unrated_men + unrated_women
+        random_impath = random.choice(all_images)
 
     # Test individual person
     #chosen_image = "images/men/Shaquille_O'Neal.jpg"
 
-    chosen_image = extract_filepath(chosen_image)
+    chosen_image = extract_filepath(random_impath)
     return chosen_image
 
 # Cleans floats so that there are no unnecessary digits on the leaderboard

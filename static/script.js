@@ -1,13 +1,14 @@
 // Changes the image (game.html)
 function loadImage() {
-    var genderChoice = localStorage.getItem("selectedOption");
+    var genderChoice = sessionStorage.getItem("selectedOption");
+    var sessionID = sessionStorage.getItem("sessionID");
 
     fetch('/get_image', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ 'gender_choice': genderChoice }),
+        body: JSON.stringify({ 'gender_choice': genderChoice, "sessionID": sessionID }),
     })
     .then(response => response.json())
     .then(data => {
@@ -30,6 +31,16 @@ function loadImage() {
 // Handles the "next" page when a user submits.
 function showAndRemoveNext() {
     var button = document.getElementById("gameButton");
+
+
+    // Making sessionID if it doesn't exist yet.
+    console.log(sessionStorage.getItem("sessionID"))
+    if (sessionStorage.getItem("sessionID") != null && sessionStorage.getItem("sessionID") != "") {
+        ;
+    }
+    else {
+        sessionStorage.setItem('sessionID', generateRandomString(30));
+    }
 
     // Changes Button Text
     if (button.innerText.slice(0, 6) === "Submit") {
@@ -98,6 +109,7 @@ function makeNext() {
 function sendRating() {
     var imagePath = document.getElementById("loadedImage").src;
     var sliderValue = document.getElementById("rating_slider").value;
+    var sessionID = sessionStorage.getItem("sessionID")
     var grammer_place = document.getElementById("useless-functionality");
 
     var avg_rating_txt = document.getElementById("avg_rating")
@@ -110,7 +122,7 @@ function sendRating() {
         headers: {
             'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ 'slider_value': sliderValue, "image_path": imagePath }),
+        body: JSON.stringify({ 'slider_value': sliderValue, "image_path": imagePath , "sessionID": sessionID}),
     })
     .then(response => response.json())
     .then(data => {
@@ -143,7 +155,7 @@ function saveSelectedOption() {
         selectedValue = "both";
     }
 
-    localStorage.setItem("selectedOption", selectedValue);
+    sessionStorage.setItem("selectedOption", selectedValue);
 }
 
 window.onload = function () {
@@ -153,13 +165,13 @@ window.onload = function () {
     }
 
     var dropdown = document.getElementById("myDropdown");
-    var selectedValue = localStorage.getItem("selectedOption")
+    var selectedValue = sessionStorage.getItem("selectedOption")
     const choices = ["both", "men", "women"]
 
     if (!selectedValue || !choices.includes(selectedValue)) {
         console.log("Setting value to both...")
         selectedValue = "both";
-        localStorage.setItem("selectedOption", selectedValue);
+        sessionStorage.setItem("selectedOption", selectedValue);
     }
 
     dropdown.value = selectedValue;
@@ -229,7 +241,7 @@ function makeFilterDropdownChanges() {
 }
 
 function loadLeaderboard() {
-    var genderChoice = localStorage.getItem("selectedOption");
+    var genderChoice = sessionStorage.getItem("selectedOption");
     var filterChoice = document.getElementById("filterDropdown").value;
     current_filter = filterChoice;
 
@@ -336,7 +348,7 @@ function loadLeaderboard() {
 }
 
 function editLeaderboardGender(leaderboard_element) {
-    var genderChoice = localStorage.getItem("selectedOption");
+    var genderChoice = sessionStorage.getItem("selectedOption");
 
     var children = leaderboard_element.children;
     var childrenArray = Array.from(children);
@@ -366,7 +378,7 @@ function searchLeaderboard(leaderboard_element, searchInput) {
     const searchTerm = searchInput.value.toLowerCase();
 
     const elements = leaderboard_element.children;
-    var genderChoice = localStorage.getItem("selectedOption");
+    var genderChoice = sessionStorage.getItem("selectedOption");
 
     for (let i = 0; i < elements.length; i++) {
         const elementText = elements[i].textContent.toLowerCase();
@@ -392,7 +404,7 @@ function searchLeaderboard(leaderboard_element, searchInput) {
 // Changes position number for men, women, both
 function changePositionText(leaderboard_element) {
     var childrenArray = Array.from(leaderboard_element.children);
-    var genderChoice = localStorage.getItem("selectedOption");
+    var genderChoice = sessionStorage.getItem("selectedOption");
     var filterChoice = document.getElementById("filterDropdown").value;
 
     if (filterChoice == "l2h") {
@@ -453,4 +465,16 @@ function makeSourceGreatAgain(source, source_type) {
         source = `<p class="overlay-source">Credit: ${source}</p>`
         return source
     }
+}
+
+function generateRandomString(length) {
+    const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+
+    let result = '';
+    for (let i = 0; i < length; i++) {
+      const randomIndex = Math.floor(Math.random() * characters.length);
+      result += characters.charAt(randomIndex);
+    }
+
+    return result;
 }

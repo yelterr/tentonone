@@ -42,9 +42,9 @@ def read_query(connection, query):
     except:
         print(f"Error: 'read error'")
 
-# Only needs filename and rating since the rest can be derived otherwise
-def add_rating(connection, filename, rating):
-    pop_ratings = f"INSERT INTO ratings (filename, rating) VALUES {(filename, rating)}"
+# Only needs sessionID, filename, rating since the rest can be derived otherwise
+def add_rating(connection, sessionID, filename, rating):
+    pop_ratings = f"INSERT INTO ratings (sessionID, filename, rating) VALUES {(sessionID, filename, rating)}"
     result = execute_query(connection, pop_ratings)
     if result:
         return True
