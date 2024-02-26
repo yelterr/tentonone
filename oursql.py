@@ -43,13 +43,83 @@ def read_query(connection, query):
         print(f"Error: 'read error'")
 
 # Only needs filename and rating since the rest can be derived otherwise
-def add_rating(connection, filename, rating):
-    pop_ratings = f"INSERT INTO ratings (filename, rating) VALUES {(filename, rating)}"
+def add_rating(connection, sessionID, filename, rating):
+    pop_ratings = f"INSERT INTO ratings (sessionID, filename, rating) VALUES {(sessionID, filename, rating)}"
     result = execute_query(connection, pop_ratings)
     if result:
         return True
     else:
         return False
+
+def add_name(connection, name, gender, filename, og_filename, source):
+    add_name_q = f"INSERT INTO names (name, gender, filename, og_filename, source) VALUES {(name, gender, filename, og_filename, source)}"
+    result = execute_query(connection, add_name_q)
+    if result:
+        return True
+    else:
+        return False
+
+def edit_name(connection, original_name, new_name=None, new_gender=None, new_filename=None, new_og_filename=None, new_source=None):
+    condition = f"WHERE name = '{original_name}';"
+    changes = [new_name, new_gender, new_filename, new_og_filename, new_source]
+    corrosponding_stat = ["name", "gender", "filename", "og_filename", "source"]
+    commands = []
+
+    for i, change in enumerate(changes):
+        if change:
+            command = f"{corrosponding_stat[i]} = '{change}'"
+            commands.append(command)
+
+    print(commands)
+
+    for command in commands:
+        update_query = f"UPDATE names SET {command} {condition}"
+        result = execute_query(connection, update_query)
+        if result:
+            print(f"{original_name} successfully updated.")
+        else:
+            print(f"There was an error updating the information of {original_name}")
+
+# Clears the ratings table
+def reset_ratings(db_connection):
+    #delete_query = "DROP TABLE ratings;"
+    #execute_query(db_connection, delete_query)
+    new_ratings_query = """
+    CREATE TABLE ratings (
+        id INT AUTO_INCREMENT PRIMARY KEY,
+        sessionID VARCHAR(30) NOT NULL,
+        filename VARCHAR(70) NOT NULL,
+        rating DECIMAL(7, 5) NOT NULL,
+        date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+        quality BOOL DEFAULT 1
+    );
+    """
+    #execute_query(db_connection, new_ratings_query)
+
+
+    clear_query = "TRUNCATE TABLE ratings;"
+    execute_query(db_connection, clear_query)
+    print("Table 'ratings' reset successfully.")
+
+# Same thing as reset_ratings(), but for names
+def reset_names(db_connection):
+    #delete_query = "DROP TABLE names;"
+    #execute_query(db_connection, delete_query)
+    new_names_query = """
+    CREATE TABLE names (
+        id INT AUTO_INCREMENT PRIMARY KEY,
+        name VARCHAR(40) NOT NULL,
+        gender VARCHAR(5) NOT NULL,
+        filename VARCHAR(70) NOT NULL,
+        og_filename VARCHAR(100),
+        source VARCHAR(500) NOT NULL
+    );
+    """
+    #execute_query(db_connection, new_names_query)
+
+    #clear_query = "TRUNCATE TABLE names;"
+    #execute_query(db_connection, clear_query)
+    print("Table 'names' reset successfully.")
 
 # Retrieves the average rating of a specified filename
 def get_current_rating(db_connection, filename):

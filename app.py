@@ -8,7 +8,13 @@ from urllib.parse import unquote
 from datetime import datetime
 
 app = Flask(__name__)
-last_image = None
+amt_unique = 150
+
+all_men_images = list(pathlib.Path("images").glob("men/*.jpg"))
+all_men_images = [str(filepath) for filepath in all_men_images]
+
+all_women_images = list(pathlib.Path("images").glob("women/*.jpg"))
+all_women_images = [str(filepath) for filepath in all_women_images]
 
 db = "tentonone"
 db_connection = create_db_connection(credentials.host, credentials.username, credentials.passwd, db)
@@ -32,7 +38,7 @@ def favicon():
 # Begins the game by loading the game template and providing the first image
 @app.route('/rate')
 def rate():
-    return render_template("game.html")
+    return render_template("rate.html")
 
 @app.route("/leaderboard")
 def leaderboard():
@@ -42,10 +48,10 @@ def leaderboard():
 @app.route("/get_image", methods=["POST"])
 def get_image():
     data = request.get_json()
-    new_gender_choice = data["gender_choice"]
-    image_path = get_random_image(new_gender_choice)
-    global last_image
-    last_image = image_path
+    gender_choice = data["gender_choice"]
+    sessionID = data["sessionID"]
+
+    image_path = get_random_image(gender_choice, sessionID)
 
     name, source = get_name(image_path)
     source_type = determine_source_type(source)
@@ -64,11 +70,12 @@ def send_rating():
     filename = extract_filepath(link)
 
     rating = float(data["slider_value"])
+    sessionID = data["sessionID"]
 
     global db_connection
     db_connection = guarantee_db_connection(db_connection)
 
-    add_rating(db_connection, filename, rating)
+    add_rating(db_connection, sessionID, filename, rating)
     rating_now = clean_num(get_current_rating(db_connection, filename))
     #rating_now = 5.5
 
@@ -144,32 +151,36 @@ def sitemap():
     return response
 
 # Retrieves a random image path from the images directory
-def get_random_image(gender_choice):
-    if gender_choice == "men":
-        all_men_images = list(pathlib.Path("images").glob("men/*.jpg"))
-        random_impath = random.choice(all_men_images)
-        chosen_image = str(random_impath)
-    elif gender_choice == "women":
-        all_women_images = list(pathlib.Path("images").glob("women/*.jpg"))
-        random_impath = random.choice(all_women_images)
-        chosen_image = str(random_impath)
-    else: # When gender_choice == "both" or any other circumstance
-        all_images = list(pathlib.Path("images").glob("*/*.jpg"))
-        #print("NEW PRINT STATEMENT")
-        #print(__file__)
-        random_impath = random.choice(all_images)
-        chosen_image = str(random_impath)
+def get_random_image(gender_choice, sessionID):
+    # Clearing last images from choices of men and women
+    past_images_query = f"SELECT DISTINCT filename FROM ratings WHERE sessionID = '{sessionID}';"
+    past_images = read_query(guarantee_db_connection(db_connection), past_images_query)
+    past_images = [image[0] for image in past_images]
 
-    # Making sure that the new image is not the same as the last image (rare, but just in case)
-    while chosen_image == last_image:
-        print(f"Filename: {chosen_image}")
-        print(f"Last Image: {last_image}")
-        chosen_image = get_random_image(gender_choice)
+    rated_men = [filename for filename in past_images if filename in all_men_images]
+    if len(rated_men) > amt_unique:
+        rated_men = rated_men[-amt_unique:]
+    rated_women = [filename for filename in past_images if filename in all_women_images]
+    if len(rated_women) > amt_unique:
+        rated_women = rated_women[-amt_unique:]
+
+    unrated_men = list(set(all_men_images) - set(rated_men))
+    unrated_women = list(set(all_women_images) - set(rated_women))
+
+    if gender_choice == "men":
+        random_impath = random.choice(unrated_men)
+
+    elif gender_choice == "women":
+        random_impath = random.choice(unrated_women)
+
+    else: # When gender_choice == "both" or any other circumstance
+        all_images = unrated_men + unrated_women
+        random_impath = random.choice(all_images)
 
     # Test individual person
     #chosen_image = "images/men/Shaquille_O'Neal.jpg"
 
-    chosen_image = extract_filepath(chosen_image)
+    chosen_image = extract_filepath(random_impath)
     return chosen_image
 
 # Cleans floats so that there are no unnecessary digits on the leaderboard
@@ -178,20 +189,19 @@ def clean_num(num):
 
     if (num == 10):
         return 10
-
-    # Clean the repeating numbers
-    if len(to_clean) >= 7:
-            if set(to_clean[1:4]) == set(to_clean[1]):
-                if int(to_clean[0]) == int(to_clean[1]) + 1 or int(to_clean[0]) == int(to_clean[1]):
-                    to_clean.pop(1)
-                    to_clean.pop(2)
-                    return float("".join(to_clean[::-1]))
-
-    for i, digit in enumerate(to_clean):
-        if digit == "0":
-            to_clean[i] = ""
-        else:
+    
+    for i, number in enumerate(to_clean):
+        if to_clean[i+2] == "." or to_clean[i+2] != number:
+            if int(number) >= 5:
+                to_clean[i] = str(int(number) + 1)
+            else:
+                to_clean[i] = number
             break
+
+        if to_clean[i+1] != number:
+            break
+        else:
+            to_clean[i] = ""
 
     return float("".join(to_clean[::-1]))
 
@@ -244,5 +254,4 @@ def determine_source_type(source):
 
 if __name__ == '__main__':
     app.run(debug=True)
-    #print("Running!")
-    #print(get_random_image(gender_choice))
+    #print(clean_better(5.0000000000))

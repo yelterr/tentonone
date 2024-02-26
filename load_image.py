@@ -67,8 +67,9 @@ def load_image_into_1020(unedited_image_path, category):
     try:
         row = df[df[1] == filename].values[0]
     except:
-        print(f"{name} not added to images.csv yet.")
+        print(f"{filename} not added to images.csv yet.")
         return False
+    
     # Row[1] is filename and Row[4] is categories
     name, _, og_filename, source, _ = row
 
@@ -104,7 +105,7 @@ if __name__ == "__main__":
     '''
     unedited_men = list(pathlib.Path("/home/ethan/Pictures/unedited_photos/men/").glob("*.jpg"))
     for man in unedited_men:
-        result = replace_image(man, "men")
+        result = load_image_into_1020(man, "men")
         if result == False:
             bad_people.append(man)
     print("All done with the men!")
@@ -113,20 +114,18 @@ if __name__ == "__main__":
     '''
     unedited_women = list(pathlib.Path("/home/ethan/Pictures/unedited_photos/women/").glob("*.jpg"))
     for woman in unedited_women:
-        result = replace_image(woman, "women")
+        result = load_image_into_1020(woman, "women")
         if result == False:
             bad_people.append(woman)
     print("All done with the women!")
-    '''
+    
 
-    '''
     print("Here are the bad apples: ")
     for apple in bad_people:
-        print(apple)
-    '''   
-
-    #replace_image("/home/ethan/Pictures/unedited_photos/women/Valkyrae.jpg", "women")
-    #edit_name(db_connection, original_name="Greta Gerwig", new_source='<a href="https://commons.wikimedia.org/wiki/File:Greta_Gerwig_at_Barbie_Movie_Reception_(headshot).jpg">UKinUSA</a>, <a href="https://creativecommons.org/licenses/by-sa/2.5">CC BY-SA 2.5</a>, via Wikimedia Commons')
+        print(apple) 
+    '''
+    
+    #edit_name(db_connection, original_name="LilyPichu", new_gender="women")
     
     print("All done!")
         
