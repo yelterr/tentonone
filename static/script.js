@@ -32,7 +32,6 @@ function loadImage() {
 function showAndRemoveNext() {
     var button = document.getElementById("gameButton");
 
-
     // Making sessionID if it doesn't exist yet.
     console.log(sessionStorage.getItem("sessionID"))
     if (sessionStorage.getItem("sessionID") != null && sessionStorage.getItem("sessionID") != "") {

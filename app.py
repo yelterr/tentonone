@@ -153,23 +153,25 @@ def sitemap():
 # Retrieves a random image path from the images directory
 def get_random_image(gender_choice, sessionID):
     # Clearing last images from choices of men and women
-    past_images_query = f"SELECT DISTINCT filename FROM ratings WHERE sessionID = '{sessionID}';"
+    if sessionID != None:
+        past_images_query = f"SELECT DISTINCT filename FROM ratings WHERE sessionID = '{sessionID}';"
+        past_images = read_query(guarantee_db_connection(db_connection), past_images_query)
+        past_images = [image[0] for image in past_images]
+        print(sessionID)
+        print(sessionID == None)
 
-    global db_connection
-    db_connection = guarantee_db_connection(db_connection)
+        rated_men = [filename for filename in past_images if filename in all_men_images]
+        if len(rated_men) > amt_unique:
+            rated_men = rated_men[-amt_unique:]
+        rated_women = [filename for filename in past_images if filename in all_women_images]
+        if len(rated_women) > amt_unique:
+            rated_women = rated_women[-amt_unique:]
 
-    past_images = read_query(db_connection, past_images_query)
-    past_images = [image[0] for image in past_images]
-
-    rated_men = [filename for filename in past_images if filename in all_men_images]
-    if len(rated_men) > amt_unique:
-        rated_men = rated_men[-amt_unique:]
-    rated_women = [filename for filename in past_images if filename in all_women_images]
-    if len(rated_women) > amt_unique:
-        rated_women = rated_women[-amt_unique:]
-
-    unrated_men = list(set(all_men_images) - set(rated_men))
-    unrated_women = list(set(all_women_images) - set(rated_women))
+        unrated_men = list(set(all_men_images) - set(rated_men))
+        unrated_women = list(set(all_women_images) - set(rated_women))
+    else:
+        unrated_men = all_men_images
+        unrated_women = all_women_images
 
     if gender_choice == "men":
         random_impath = random.choice(unrated_men)
