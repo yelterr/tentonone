@@ -10,10 +10,10 @@ from datetime import datetime
 app = Flask(__name__)
 amt_unique = 150
 
-all_men_images = list(pathlib.Path("images").glob("men/*.jpg"))
+all_men_images = list(pathlib.Path("/home/ethangomez/tentonone/images").glob("men/*.jpg"))
 all_men_images = [str(filepath) for filepath in all_men_images]
 
-all_women_images = list(pathlib.Path("images").glob("women/*.jpg"))
+all_women_images = list(pathlib.Path("/home/ethangomez/tentonone/images").glob("women/*.jpg"))
 all_women_images = [str(filepath) for filepath in all_women_images]
 
 db = "ethangomez$tentonone"
@@ -58,7 +58,7 @@ def get_image():
 
     name, source = get_name(image_path)
     source_type = determine_source_type(source)
-    print(name)
+    #print(name)
 
     result = {"impath" : image_path, "name" : name, "source" : source, "source_type" : source_type}
 
@@ -163,8 +163,6 @@ def get_random_image(gender_choice, sessionID):
         past_images_query = f"SELECT DISTINCT filename FROM ratings WHERE sessionID = '{sessionID}';"
         past_images = read_query(guarantee_db_connection(db_connection), past_images_query)
         past_images = [image[0] for image in past_images]
-        print(sessionID)
-        print(sessionID == None)
 
         rated_men = [filename for filename in past_images if filename in all_men_images]
         if len(rated_men) > amt_unique:
@@ -187,6 +185,8 @@ def get_random_image(gender_choice, sessionID):
 
     else: # When gender_choice == "both" or any other circumstance
         all_images = unrated_men + unrated_women
+        print(all_men_images)
+        print(all_images)
         random_impath = random.choice(all_images)
 
     # Test individual person
@@ -251,7 +251,7 @@ def get_name(impath):
     #results = (10, "John", 0, 0, 0, "yourmom.com")
     _, name, _, _, _, source = results
     name = unquote(name)
-    print("Getting name for...", name)
+    #print("Getting name for...", name)
 
     return name, source
 

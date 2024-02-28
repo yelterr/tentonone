@@ -1,6 +1,3 @@
-test.py
+.env
+__pychache__/
 my_creds.py
-__pycache__/
-making_tentonone_db.py
-testing_oursql.py
-actual_ratings.csv
