@@ -33,7 +33,6 @@ function showAndRemoveNext() {
     var button = document.getElementById("gameButton");
 
     // Making sessionID if it doesn't exist yet.
-    console.log(sessionStorage.getItem("sessionID"))
     if (sessionStorage.getItem("sessionID") != null && sessionStorage.getItem("sessionID") != "") {
         ;
     }
@@ -144,10 +143,8 @@ function sendRating() {
 
 // Keeps the dropdown consistent between pages
 function saveSelectedOption() {
-    console.log("saveSelectedOption() ran...")
     var dropdown = document.getElementById("myDropdown");
     var selectedValue = dropdown.value;
-    console.log(selectedValue)
 
     const choices = ["both", "men", "women"]
     if (!choices.includes(selectedValue)) {
@@ -168,7 +165,6 @@ window.onload = function () {
     const choices = ["both", "men", "women"]
 
     if (!selectedValue || !choices.includes(selectedValue)) {
-        console.log("Setting value to both...")
         selectedValue = "both";
         sessionStorage.setItem("selectedOption", selectedValue);
     }

@@ -3,14 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <!-- <link rel="icon" type="image/x-icon" href="../images/favicon.ico"> -->
     <link rel="icon" type="image/vnd.microsoft.icon" href="/favicon.ico">
 
-    <!-- TODO: ADD AN EASTER EGG TO THIS PAGE (OR ALL, DEPENDS ON WHAT) -->
     <title>Ten to None</title>
 
     <style>
-        /* TODO - Make sure that each style page only imports the sizes it needs */
         @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap');
 
         /*
@@ -142,7 +139,15 @@
 
 </head>
 <body>
-    <!-- Welcome to Ten to None -->
+    <!-- 
+     _               _                                 
+    | |             | |                                
+    | |_ ___ _ __   | |_ ___    _ __   ___  _ __   ___ 
+    | __/ _ \ '_ \  | __/ _ \  | '_ \ / _ \| '_ \ / _ \
+    | ||  __/ | | | | || (_) | | | | | (_) | | | |  __/
+     \__\___|_| |_|  \__\___/  |_| |_|\___/|_| |_|\___|
+    
+    -->
 
     {% include 'navbar.html' %}
 
@@ -151,9 +156,6 @@
 
         <div class="test-box">
             <img class="big-logo" src="../images/logo.png" alt="There should be a logo here... :/">
-            <!--
-            <img src="../images/notMyLogo.png" alt="Italian Trulli">
-            -->
             <p style="width: 90vw; max-width: 650px;">Rate attractiveness on a scale of<span style="color: #FF0D0D; font-weight: 700;"> 0 </span>to<span style="color: #5F2AD0; font-weight: 700;"> 10</span></p>
             {% include 'dropdown.html' %}
         </div>

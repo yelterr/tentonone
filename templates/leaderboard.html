@@ -412,7 +412,7 @@
             });
             // Function to filter elements based on the search term
             function filterElements(searchTerm) {
-                var genderChoice = localStorage.getItem("selectedOption");
+                var genderChoice = sessionStorage.getItem("selectedOption");
                 const elements = document.getElementsByClassName('leaderboard-element');
 
                 for (let i = 0; i < elements.length; i++) {
