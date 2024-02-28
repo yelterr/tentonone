@@ -40,7 +40,7 @@ def process_image(impath, percent_margin=0.25):
     bottom = y + height
 
     cropped_img = img.crop((x, y, right, bottom))
-    resized_image = cropped_img.resize((600, 600))
+    resized_image = cropped_img.resize((500, 500))
     return resized_image
 
 def load_image_into_1020(unedited_image_path, category):
@@ -105,7 +105,8 @@ if __name__ == "__main__":
     '''
     unedited_men = list(pathlib.Path("/home/ethan/Pictures/unedited_photos/men/").glob("*.jpg"))
     for man in unedited_men:
-        result = load_image_into_1020(man, "men")
+        #result = load_image_into_1020(man, "men")
+        result = replace_image(man, "men")
         if result == False:
             bad_people.append(man)
     print("All done with the men!")
@@ -114,18 +115,34 @@ if __name__ == "__main__":
     '''
     unedited_women = list(pathlib.Path("/home/ethan/Pictures/unedited_photos/women/").glob("*.jpg"))
     for woman in unedited_women:
-        result = load_image_into_1020(woman, "women")
+        #result = load_image_into_1020(woman, "women")
+        result = replace_image(woman, "women")
         if result == False:
             bad_people.append(woman)
     print("All done with the women!")
-    
+    '''
+
+    all_men = list(pathlib.Path("images/men/").glob("*.jpg"))
+    for man in all_men:
+        img = PIL.Image.open(man)
+        img = img.convert("RGB")
+        resized_image = img.resize((500, 500))
+        resized_image.save(man)
+        print(f"{man} has been resized!")
+    print("All done with the men!")
+
+    all_women = list(pathlib.Path("images/women/").glob("*.jpg"))
+    for woman in all_women:
+        img = PIL.Image.open(woman)
+        img = img.convert("RGB")
+        resized_image = img.resize((500, 500))
+        resized_image.save(woman)
+        print(f"{woman} has been resized!")
+    print("All done with the women!")
 
     print("Here are the bad apples: ")
     for apple in bad_people:
         print(apple) 
-    '''
-    
-    replace_image("/home/ethan/Pictures/unedited_photos/men/Captain_Sinbad.jpg", "men")
     
     print("All done!")
         
