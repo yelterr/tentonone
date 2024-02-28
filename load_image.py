@@ -125,7 +125,7 @@ if __name__ == "__main__":
         print(apple) 
     '''
     
-    #edit_name(db_connection, original_name="LilyPichu", new_gender="women")
+    replace_image("/home/ethan/Pictures/unedited_photos/men/Captain_Sinbad.jpg", "men")
     
     print("All done!")
         
