@@ -163,7 +163,11 @@ def get_random_image(gender_choice, sessionID):
     # Clearing last images from choices of men and women
     if sessionID != None:
         past_images_query = f"SELECT DISTINCT filename FROM ratings WHERE sessionID = '{sessionID}';"
-        past_images = read_query(guarantee_db_connection(db_connection), past_images_query)
+
+        global db_connection
+        db_connection = guarantee_db_connection(db_connection)
+
+        past_images = read_query(db_connection, past_images_query)
         past_images = [image[0] for image in past_images]
 
         rated_men = [filename for filename in past_images if filename in all_men_images]
@@ -187,8 +191,6 @@ def get_random_image(gender_choice, sessionID):
 
     else: # When gender_choice == "both" or any other circumstance
         all_images = unrated_men + unrated_women
-        print(all_men_images)
-        print(all_images)
         random_impath = random.choice(all_images)
 
     # Test individual person
