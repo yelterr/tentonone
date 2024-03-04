@@ -175,13 +175,14 @@ def get_random_image(gender_choice, sessionID):
 
         unrated_men = list(set(all_men_images) - set(rated_men))
         unrated_women = list(set(all_women_images) - set(rated_women))
+
+        print(f"Rated men: {rated_men}")
+        print(f"Rated women: {rated_women}")
     else:
         print("Session ID WAS NONE!!!!!!!!!!!!")
+        print("NOT PRINTING RATED MEN / WOMEN")
         unrated_men = all_men_images
         unrated_women = all_women_images
-
-    print(f"Rated men: {rated_men}")
-    print(f"Rated women: {rated_women}")
 
     if gender_choice == "men":
         random_impath = random.choice(unrated_men)
