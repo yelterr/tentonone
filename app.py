@@ -168,10 +168,10 @@ def get_random_image(gender_choice, sessionID):
 
         print(f"All men images: {all_men_images}")
 
-        rated_men = [filename for filename in past_images if ("/home/ethangomez/tentonone/" + filename) in all_men_images]
+        rated_men = [("/home/ethangomez/tentonone/" + filename) for filename in past_images if ("/home/ethangomez/tentonone/" + filename) in all_men_images]
         if len(rated_men) > amt_unique:
             rated_men = rated_men[-amt_unique:]
-        rated_women = [filename for filename in past_images if ("/home/ethangomez/tentonone/" + filename) in all_women_images]
+        rated_women = [("/home/ethangomez/tentonone/" + filename) for filename in past_images if ("/home/ethangomez/tentonone/" + filename) in all_women_images]
         if len(rated_women) > amt_unique:
             rated_women = rated_women[-amt_unique:]
 
