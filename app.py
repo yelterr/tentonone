@@ -166,6 +166,8 @@ def get_random_image(gender_choice, sessionID):
         past_images = [image[0] for image in past_images]
         print(f"Past images: {past_images}")
 
+        print(f"All men images: {all_men_images}")
+
         rated_men = [filename for filename in past_images if filename in all_men_images]
         if len(rated_men) > amt_unique:
             rated_men = rated_men[-amt_unique:]
