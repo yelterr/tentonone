@@ -163,8 +163,6 @@ def get_random_image(gender_choice, sessionID):
         past_images_query = f"SELECT DISTINCT filename FROM ratings WHERE sessionID = '{sessionID}';"
         past_images = read_query(guarantee_db_connection(db_connection), past_images_query)
         past_images = [image[0] for image in past_images]
-        print(sessionID)
-        print(sessionID == None)
 
         rated_men = [filename for filename in past_images if filename in all_men_images]
         if len(rated_men) > amt_unique:
@@ -172,6 +170,9 @@ def get_random_image(gender_choice, sessionID):
         rated_women = [filename for filename in past_images if filename in all_women_images]
         if len(rated_women) > amt_unique:
             rated_women = rated_women[-amt_unique:]
+
+        print(rated_men)
+        print(rated_women)
 
         unrated_men = list(set(all_men_images) - set(rated_men))
         unrated_women = list(set(all_women_images) - set(rated_women))
