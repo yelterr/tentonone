@@ -21,6 +21,8 @@ db_connection = create_db_connection(credentials.host, credentials.username, cre
 db_connection = guarantee_db_connection(db_connection)
 
 @app.route('/')
+def index():
+    return render_template('index.html')
 
 # Serve images in the /images directory
 @app.route('/images/<path:filename>')
