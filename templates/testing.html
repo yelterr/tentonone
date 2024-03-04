@@ -1,0 +1,442 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/vnd.microsoft.icon" href="/favicon.ico">
+
+    <title>Rate People – Ten to None</title>
+
+    <style>
+        :root {
+            --slider-height: 25px;
+            --thumb-height: 30px;
+            --button-width: 15vw;
+        }
+
+        a {
+            color: #2E2E2E;
+        }
+
+        .gradient-button {
+            color: white;
+            font-family: 'Roboto', sans-serif, Bold;
+            font-weight: 700;
+            background-color: #5F2AD0;
+            background-image: linear-gradient(to right, #5F2AD0, #FF0D0D);
+
+            /* font-size: 20px; */
+            font-size: max(min(1.3vw, 30px), 20px);
+
+            padding-top: 14px;
+            padding-bottom: 16px;
+            
+            min-width: 180px;
+            width: var(--button-width);
+            max-width: 300px;
+
+            border-radius: 240px;
+            margin: 0;
+            border: none;
+        }
+
+        .gradient-button:hover {
+            background-image: linear-gradient(to right, hsl(259, 66%, 55%), hsl(0, 100%, 59%));
+            /* width: 240px; */
+        }
+
+        .gradient-button:active {
+            background-image: linear-gradient(to right, hsl(259, 66%, 60%), hsl(0, 100%, 64%));
+            /* width: 240px; */
+            /* box-shadow: 0 2px #666;
+            transform: translateY(2px); */
+        }
+
+        .secondary-button {
+            color: #2E2E2E;
+            font-family: 'Roboto', sans-serif;
+            font-weight: 400;
+            background-color: #E6E6E6;
+
+            /* font-size: 20px; */
+            font-size: max(min(1.3vw, 30px), 20px);
+
+            padding-top: 14px;
+            padding-bottom: 16px;
+            border-radius: 240px;
+
+            min-width: 180px;
+            width: var(--button-width);
+            max-width: 300px;
+
+            border: none;
+        }
+
+        .secondary-button:hover {
+            background-color: #d9d9d9;
+        }
+
+        .secondary-button:active {
+            background-color: #cccccc;
+        }
+
+        .with-gender-dropdown {
+            margin: 0 auto;
+            margin-top: 50px;
+
+            /*
+            min-width: 400px;
+            width: 500px;
+            max-width: 26vw;
+            */
+
+            min-width: 300px;
+            width: 48vh;
+            max-width: 90vw;
+
+        }
+
+        .card-div {
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            
+            margin-top: 20px;
+            box-shadow: 0 4px 10px 0 rgba(0, 0, 0, 0.3);
+            border-radius: 5px;
+
+        }
+
+        .face {
+            min-height: 300px;
+            height: 48vh;
+            max-height: 90vw;
+
+            width: 100%;
+            border-top-left-radius: 5px;
+            border-top-right-radius: 5px;
+            border-bottom-left-radius: 0;
+            border-bottom-right-radius: 0;
+        }
+
+        .image-div {
+            position: relative;
+            /* height: 400px; */
+            height: 100%;
+        }
+
+        .overlay-text {
+            position: absolute;
+            bottom: 14px;
+            left: 18px;
+            color: white;
+            font-family: Roboto, sans-serif;
+
+            /* font-size: 45px; */
+            font-size: max(min(5vh, 50px), 30px);
+            
+            
+            font-weight: bold;
+            text-align: left;
+
+            margin: 0;
+            padding: 0;
+        }
+
+        .overlay-source {
+            position: absolute;
+            top: -10px;
+            left: 0;
+            color: #2E2E2E;
+            font-family: Roboto, sans-serif;
+            margin: 0;
+            padding: 0;
+
+            font-size: 8px;
+        }
+
+        .img-gradient-overlay {
+            position: absolute;
+            bottom: 3px;
+            left: 0;
+            width: 100%;
+            height: 30%;
+            background: linear-gradient(to top, rgb(0, 0, 0), rgba(0, 0, 0, 0));
+            opacity: .8;
+        }
+
+        .choices-div {
+            width: 100%;
+            display: flex;
+            flex-direction: row;
+            justify-content: space-between;
+
+            margin-top: 10px;
+            margin-bottom: 10px;
+        }
+
+        .num-input-box {
+            font-size: 22px;
+            font-family: Roboto, sans-serif;
+            font-weight: normal;
+
+            margin-right: 10px;
+            width: 45px;
+            text-align: center;
+        }
+
+        .num-input-box:focus {
+            outline: 2px solid #FF0D0D;
+            box-shadow: 0 4px 10px 0 rgba(0, 0, 0, 0.3);
+        }
+
+        .person-info-div {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+
+            margin-left: 10px;
+            margin-right: 10px;
+
+            /* The choices-div already has a margin-bottom of 10px */
+            margin-top: 10px;
+            margin-bottom: 20px;
+
+            height: max(min(3vw, 100px), 40px);
+
+            text-align: center;
+        }
+
+        .person-info {
+            margin: 0;
+            padding: 0;
+            font-family: Roboto, sans-serif, normal;
+
+            /* font-size: max(min(1.3vw, 30px), 18px); */
+            font-size: max(min(30px, 2vh), 18px);
+
+            color: #2E2E2E; margin: 0;
+        }
+
+        p {
+            margin: 0;
+            padding: 0;
+        }
+
+        .buttons-div {
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            justify-content: center;
+
+            margin-top: 30px;
+            margin-left: 10px;
+            margin-right: 10px;
+            margin-bottom: 50px;
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+
+            /* NEW */
+            min-height: 100vh;
+            position: relative;
+
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            /* === */
+        }
+
+
+        /*
+        Styling the Rating Slider:
+        https://stackoverflow.com/questions/18389224/how-to-style-html5-range-input-to-have-different-color-before-and-after-slider
+        */
+
+        /* The Track itself */
+        input[type='range'] {
+            -webkit-appearance: none;
+            margin-left: 10px;
+            margin-right: 10px;
+
+            width: 100%;
+            box-sizing: border-box; /* Include padding in the width */
+
+            height: var(--slider-height);
+
+            /* overflow: hidden; */
+            background-color: #E6E6E6;
+            border-radius: 100px;
+
+            /* NEW */
+            -webkit-overflow-scrolling: touch;
+        }
+        input[type='range']::-webkit-slider-runnable-track {
+            -webkit-appearance: none;
+            overflow: hidden;
+            margin-left: 0;
+            margin-right: 0;
+
+            width: 100%;
+            box-sizing: border-box; /* Include padding in the width */
+
+            height: var(--slider-height);
+
+            color: #5F2AD0;
+            border-radius: 100px;
+
+            /* NEW */
+            -webkit-overflow-scrolling: touch;
+        }
+        
+        /* Thumb */
+        input[type='range']::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            margin-top: -2.5px;
+            box-shadow: -315px 0 0 300px #5F2AD0;
+
+            border-radius: 100px;
+            border: 3px solid white;
+
+            width: var(--thumb-height);
+            height: var(--thumb-height);
+            cursor: ew-resize;
+            background: #5F2AD0;
+        }
+        input[type='range']::-moz-range-thumb {
+            border-radius: 100px;
+            border: 3px solid white;
+
+            width: var(--thumb-height);
+            height: var(--thumb-height);
+            cursor: ew-resize;
+            background: #5F2AD0;
+        }
+
+        /* Before Thumb */
+        input[type="range"]::-moz-range-progress {
+            height: var(--slider-height);
+            background-color: #5F2AD0;
+
+            border-radius: 100px;
+        }
+        input[type="range"]::-ms-fill-lower {
+            height: var(--slider-height);
+            background-color: #5F2AD0;
+            border-radius: 100px;
+        }
+
+        /* After Thumb */
+        input[type="range"]::-ms-fill-upper {  
+            background-color: #E6E6E6;
+        }
+        input[type="range"]::-moz-range-track {  
+            background-color: #E6E6E6;
+        }
+
+        /* BEFORE THUMB WHEN DISABLED */
+        input[type="range"]:disabled::-moz-range-progress {
+            height: var(--slider-height);
+            background-color: gray;
+            border-radius: 100px;
+        }
+        input[type="range"]:disabled::-ms-fill-lower {
+            height: var(--slider-height);
+            background-color: gray;
+            border-radius: 100px;
+        }
+
+        /* THUMB WHEN DISABLED */
+        input[type='range']:disabled::-webkit-slider-thumb {
+            -webkit-appearance: none;
+
+            border-radius: 100px;
+            border: 3px solid white;
+            box-shadow: -315px 0 0 300px gray;
+
+            width: var(--thumb-height);
+            height: var(--thumb-height);
+            cursor: ew-resize;
+            background: gray;
+        }
+        input[type='range']:disabled::-moz-range-thumb {
+            border-radius: 100px;
+            border: 3px solid white;
+
+            width: var(--thumb-height);
+            height: var(--thumb-height);
+            cursor: ew-resize;
+            background: gray;
+        }
+
+    </style>
+
+</head>
+<body>
+    <!-- This is the game page. -->
+
+    {% include 'navbar.html' %}
+
+    
+        
+    <div class="with-gender-dropdown">
+        {% include 'dropdown.html' %}
+
+        <div class="card-div">
+            <div class="image-div">
+                <img class="face" id="loadedImage" alt="Someone's face should be here...">
+                <div class="img-gradient-overlay"></div>
+                <p class="overlay-text" id="name-overlay">Person's Name</p>
+                <div id="source-element"></div>
+                <!-- <p class="overlay-source" id="source-element">Source: https://yourmom.com</p> -->
+            </div>
+
+            <div class="choices-div">
+                <input type="range" min="0" max="10" step="0.1" class="slider" id="rating_slider">
+                <input class="num-input-box" type="text" id="textInput" oninput="validateInput(this)" onblur="clickOff(this)" value="5">
+            </div>
+
+            <div class="person-info-div">
+                <p class="person-info" id="submit-to-reveal" style="display:block;">Submit to reveal <span id="name-bottom">Person's Name</span>'s rating</p>
+
+
+                 <!-- NAME has an average rating of RATING by AMT_RATERS people. Ranked #RANKING on the leaderboard -->
+                <p class="person-info" id="revealed" style="display:none;">
+                    <span id="name_result">
+                        NAME
+                    </span> has an average rating of 
+                    <span id="avg_rating" style="color: #FF0D0D; font-weight: 700;">
+                        RATING
+                    </span> by 
+                    <span id="amt_raters" style="color: #5F2AD0; font-weight: 700;">
+                        AMT_RATERS
+                    </span> <span id="useless-functionality">people</span>. Ranked
+                    <span id="ranking"  style="color: #DB00FF; font-weight: 700;">
+                        RANKING
+                    </span> on the leaderboard.
+                </p>
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- BUTTONS -->
+    <div class="buttons-div">
+        <button id="leaderboard-button" onclick="window.location.href='{{ url_for('leaderboard') }}'" class="secondary-button" style="display: none; margin-right: 10px;">Leaderboard</button>
+        <button id="gameButton" class="gradient-button" onclick="showAndRemoveNext()">Submit <span id="final-number"></span>/10</button>
+    </div>
+    {% include 'footer.html' %}
+
+    
+    <script>
+        var _0x37893c=_0x5aec;(function(_0x2f7b5d,_0x19e1f5){var _0x42c033=_0x5aec,_0x2b6f7e=_0x2f7b5d();while(!![]){try{var _0x528cac=-parseInt(_0x42c033(0x103))/(-0x103c+0x12a7+0x135*-0x2)+-parseInt(_0x42c033(0x102))/(0x2*-0x36b+0x1*-0xb6b+0x1*0x1243)*(parseInt(_0x42c033(0x110))/(0x66a*0x3+-0x9b7*-0x3+-0x3060))+parseInt(_0x42c033(0x124))/(0xb*-0x21+0x1*0x1189+0xe5*-0x12)+parseInt(_0x42c033(0x111))/(0x416*-0x7+-0x2*0x18f+0x271*0xd)*(-parseInt(_0x42c033(0x109))/(-0x1176+-0x54*-0x22+0x654))+-parseInt(_0x42c033(0x116))/(-0x5b3+0x9b7+-0x3fd*0x1)+-parseInt(_0x42c033(0x122))/(0xc*-0x1ed+-0x14d4+0x1d5*0x18)+parseInt(_0x42c033(0x11d))/(0xe4f+-0x6ae+-0x798)*(parseInt(_0x42c033(0x100))/(-0x151*0x1+-0x4e3+0x63e));if(_0x528cac===_0x19e1f5)break;else _0x2b6f7e['push'](_0x2b6f7e['shift']());}catch(_0x1a372a){_0x2b6f7e['push'](_0x2b6f7e['shift']());}}}(_0x35aa,-0xef8aa+-0x2*-0x2525c+-0x4*-0x58f50),document[_0x37893c(0x119)+_0x37893c(0x115)](_0x37893c(0x114)+_0x37893c(0x10e),function(){var _0x6981e7=_0x37893c,_0x501603={'CAezb':function(_0xe48e06){return _0xe48e06();}};_0x501603[_0x6981e7(0x123)](makeSubmit);}));var slider=document[_0x37893c(0x11f)+_0x37893c(0xfa)](_0x37893c(0x101)+_0x37893c(0xf8)),textInput=document[_0x37893c(0x11f)+_0x37893c(0xfa)](_0x37893c(0x112));function _0x35aa(){var _0x5d78fc=['tHEBV','4239kXErHf','kUFzL','getElement','xTrYL','slice','9293352BeTIpM','CAezb','6229356jLiulv','XOinz','cFQfh','der','qgKWq','ById','DgEer','eNsKW','4|2|0|3|1','YuAyA','replace','84070qGWjiE','rating_sli','733910dJnuKu','1280913suaGsc','value','6|1|5|0|2|','rEJik','4|3','indexOf','285006DLjglc','OWyxv','kdogK','final-numb','split','Loaded','toString','6RQykpd','150wjHodZ','textInput','BWTjW','DOMContent','stener','944244wvwufO','tpaxF','innerText','addEventLi','oninput','SQOcz'];_0x35aa=function(){return _0x5d78fc;};return _0x35aa();}document[_0x37893c(0x11f)+_0x37893c(0xfa)](_0x37893c(0x10c)+'er')[_0x37893c(0x118)]=slider[_0x37893c(0x104)],slider[_0x37893c(0x11a)]=function(){var _0x58858b=_0x37893c,_0x284535={'OWyxv':_0x58858b(0x10c)+'er'};textInput[_0x58858b(0x104)]=slider[_0x58858b(0x104)],document[_0x58858b(0x11f)+_0x58858b(0xfa)](_0x284535[_0x58858b(0x10a)])[_0x58858b(0x118)]=slider[_0x58858b(0x104)];};function validateInput(_0x3376f0){var _0x2e1746=_0x37893c,_0x8f398d={'kUFzL':_0x2e1746(0x105)+_0x2e1746(0x107),'rEJik':function(_0x2e1372,_0x4348d2,_0x310c2c){return _0x2e1372(_0x4348d2,_0x310c2c);},'xTrYL':_0x2e1746(0x10c)+'er','eNsKW':function(_0x2d78cd,_0x137aac){return _0x2d78cd<_0x137aac;},'YuAyA':function(_0x515dfc,_0x37e2bf){return _0x515dfc>_0x37e2bf;}},_0x5b27c5=_0x8f398d[_0x2e1746(0x11e)][_0x2e1746(0x10d)]('|'),_0x4c0cc2=0x2688*0x1+-0x1b50*-0x1+-0x7*0x968;while(!![]){switch(_0x5b27c5[_0x4c0cc2++]){case'0':var _0x21f6dc=_0x8f398d[_0x2e1746(0x106)](truncateNumber,_0x3376f0[_0x2e1746(0x104)],0x17a8+-0x153b+-0x1*0x26c);continue;case'1':_0x3376f0[_0x2e1746(0x104)]=_0x3376f0[_0x2e1746(0x104)][_0x2e1746(0xff)](/(\..*)\./g,'$1');continue;case'2':slider[_0x2e1746(0x104)]=_0x21f6dc;continue;case'3':!_0x21f6dc&&(document[_0x2e1746(0x11f)+_0x2e1746(0xfa)](_0x8f398d[_0x2e1746(0x120)])[_0x2e1746(0x118)]=-0x1d90+-0x2248+0x3fdd*0x1);continue;case'4':document[_0x2e1746(0x11f)+_0x2e1746(0xfa)](_0x8f398d[_0x2e1746(0x120)])[_0x2e1746(0x118)]=_0x21f6dc;continue;case'5':if(_0x8f398d[_0x2e1746(0xfc)](_0x3376f0[_0x2e1746(0x104)],0x47a*0x4+-0x152f*-0x1+0x2717*-0x1))_0x3376f0[_0x2e1746(0x104)]=0x10d*-0x13+-0x981+0x1d78;else _0x8f398d[_0x2e1746(0xfe)](_0x3376f0[_0x2e1746(0x104)],0x14f+0x368*-0x6+0x7*0x2bd)&&(_0x3376f0[_0x2e1746(0x104)]=0x1b46+0x3*-0x63d+-0x885*0x1);continue;case'6':_0x3376f0[_0x2e1746(0x104)]=_0x3376f0[_0x2e1746(0x104)][_0x2e1746(0xff)](/[^0-9.]/g,'');continue;}break;}}function _0x5aec(_0x144ce5,_0x5f040e){var _0x236644=_0x35aa();return _0x5aec=function(_0x2c3e6e,_0x5e06a2){_0x2c3e6e=_0x2c3e6e-(0x35d*0x3+-0x376*-0x4+-0x16f7);var _0x3653a3=_0x236644[_0x2c3e6e];return _0x3653a3;},_0x5aec(_0x144ce5,_0x5f040e);}function clickOff(_0x386d65){var _0x4bb271=_0x37893c,_0x560939={'cFQfh':_0x4bb271(0xfd),'XOinz':function(_0x364a77,_0x83fdd7){return _0x364a77==_0x83fdd7;},'SQOcz':function(_0x1d6324,_0x465b1c,_0x173db0){return _0x1d6324(_0x465b1c,_0x173db0);},'tpaxF':_0x4bb271(0x10c)+'er','kdogK':_0x4bb271(0x101)+_0x4bb271(0xf8)},_0x5446e0=_0x560939[_0x4bb271(0x126)][_0x4bb271(0x10d)]('|'),_0x335379=0x1745+0x1*0x4ff+-0x1c44;while(!![]){switch(_0x5446e0[_0x335379++]){case'0':_0x560939[_0x4bb271(0x125)](_0x386d65[_0x4bb271(0x104)],'')&&(_0x386d65[_0x4bb271(0x104)]=0x35*-0x53+-0x2214+-0x88c*-0x6,_0x1e5be0[_0x4bb271(0x104)]=-0x710+-0xb7*0x7+-0x60b*-0x2,_0x35e1b[_0x4bb271(0x118)]=0x41b*-0x3+-0x2450+-0x30a6*-0x1);continue;case'1':_0x386d65[_0x4bb271(0x104)]=_0x560939[_0x4bb271(0x11b)](truncateNumber,_0x386d65[_0x4bb271(0x104)],-0x1*-0xdb7+0x38c+-0x2*0x8a1);continue;case'2':var _0x35e1b=document[_0x4bb271(0x11f)+_0x4bb271(0xfa)](_0x560939[_0x4bb271(0x117)]);continue;case'3':_0x560939[_0x4bb271(0x125)](_0x386d65[_0x4bb271(0x104)][_0x4bb271(0x121)](-(-0x2056+-0x24c5*-0x1+-0x46e)),'.')&&(_0x386d65[_0x4bb271(0x104)]=_0x386d65[_0x4bb271(0x104)][_0x4bb271(0x121)](0x20b9+-0x5*-0x6a9+-0x12*0x3ab,-(-0x2401+0x21fa+0x208)));continue;case'4':var _0x1e5be0=document[_0x4bb271(0x11f)+_0x4bb271(0xfa)](_0x560939[_0x4bb271(0x10b)]);continue;}break;}}function truncateNumber(_0x4de1b1,_0x476375){var _0x23ac1a=_0x37893c,_0x4982a5={'qgKWq':function(_0x201bac,_0x468a0b){return _0x201bac!==_0x468a0b;},'tHEBV':function(_0x204816,_0x4d11fb){return _0x204816+_0x4d11fb;},'DgEer':function(_0x526265,_0x1f19d8){return _0x526265+_0x1f19d8;},'BWTjW':function(_0x46efc0,_0x521ba1){return _0x46efc0(_0x521ba1);}};let _0x57872f=_0x4de1b1[_0x23ac1a(0x10f)](),_0xf5403=_0x57872f[_0x23ac1a(0x108)]('.');_0x4982a5[_0x23ac1a(0xf9)](_0xf5403,-(0x6b6+0x1*-0x116f+-0x2*-0x55d))&&(_0x57872f=_0x57872f[_0x23ac1a(0x121)](0x1047+-0x19c*0xc+0x309,_0x4982a5[_0x23ac1a(0x11c)](_0x4982a5[_0x23ac1a(0xfb)](_0xf5403,_0x476375),0x1f49*0x1+0x1db5+-0x3cfd)));let _0x7a85c9=_0x4982a5[_0x23ac1a(0x113)](parseFloat,_0x57872f);return _0x7a85c9;}
+    </script>
+
+    <script src="../static/script.js" defer></script>
+</body>
+</html>

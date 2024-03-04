@@ -20,10 +20,12 @@ db = "ethangomez$tentonone"
 db_connection = create_db_connection(credentials.host, credentials.username, credentials.passwd, db)
 db_connection = guarantee_db_connection(db_connection)
 
-# Loads the main menu
 @app.route('/')
-def index():
-    return render_template('index.html')
+
+# Loads the main menu
+@app.route('/nz7yJgXnzSQdbcKNYKnPH5sBX4PmpxMSBLyeEn9z')
+def start_testing():
+    return render_template('testing.html')
 
 # Serve images in the /images directory
 @app.route('/images/<path:filename>')
