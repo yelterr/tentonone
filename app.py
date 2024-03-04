@@ -22,11 +22,6 @@ db_connection = guarantee_db_connection(db_connection)
 
 @app.route('/')
 
-# Loads the main menu
-@app.route('/nz7yJgXnzSQdbcKNYKnPH5sBX4PmpxMSBLyeEn9z')
-def start_testing():
-    return render_template('testing.html')
-
 # Serve images in the /images directory
 @app.route('/images/<path:filename>')
 def serve_image(filename):
