@@ -72,6 +72,7 @@ def send_rating():
     filename = extract_filepath(link)
 
     rating = float(data["slider_value"])
+    print(f"Slider value: {rating}")
     sessionID = data["sessionID"]
     if sessionID:
         if len(sessionID) > 30:
