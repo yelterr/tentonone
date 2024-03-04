@@ -180,6 +180,8 @@ def get_random_image(gender_choice, sessionID):
 
         print(f"Rated men: {rated_men}")
         print(f"Rated women: {rated_women}")
+        print(f"length of unrated men: {len(unrated_men)}")
+        print(f"length of unrated women: {len(unrated_women)}")
     else:
         print("Session ID WAS NONE!!!!!!!!!!!!")
         print("NOT PRINTING RATED MEN / WOMEN")
