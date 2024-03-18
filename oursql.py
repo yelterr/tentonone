@@ -74,6 +74,7 @@ def edit_name(connection, original_name, new_name=None, new_gender=None, new_fil
 
     for command in commands:
         update_query = f"UPDATE names SET {command} {condition}"
+        print(update_query)
         result = execute_query(connection, update_query)
         if result:
             print(f"{original_name} successfully updated.")
