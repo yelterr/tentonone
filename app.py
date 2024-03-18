@@ -73,6 +73,7 @@ def send_rating():
     filename = extract_filepath(link)
 
     rating = float(data["slider_value"])
+    print(f"Slider value: {rating}")
     sessionID = data["sessionID"]
     if sessionID:
         if len(sessionID) > 30:
@@ -159,23 +160,37 @@ def sitemap():
 # Retrieves a random image path from the images directory
 def get_random_image(gender_choice, sessionID):
     # Clearing last images from choices of men and women
+    #print(f"Session ID: {sessionID}")
     if sessionID != None:
+        #print("Session ID Was NOT None")
         past_images_query = f"SELECT DISTINCT filename FROM ratings WHERE sessionID = '{sessionID}';"
-        past_images = read_query(guarantee_db_connection(db_connection), past_images_query)
-        past_images = [image[0] for image in past_images]
-        print(sessionID)
-        print(sessionID == None)
 
-        rated_men = [filename for filename in past_images if filename in all_men_images]
+        global db_connection
+        db_connection = guarantee_db_connection(db_connection)
+
+        past_images = read_query(db_connection, past_images_query)
+        past_images = [image[0] for image in past_images]
+        #print(f"Past images: {past_images}")
+
+        #print(f"All men images: {all_men_images}")
+
+        rated_men = [("/home/ethangomez/tentonone/" + filename) for filename in past_images if ("/home/ethangomez/tentonone/" + filename) in all_men_images]
         if len(rated_men) > amt_unique:
             rated_men = rated_men[-amt_unique:]
-        rated_women = [filename for filename in past_images if filename in all_women_images]
+        rated_women = [("/home/ethangomez/tentonone/" + filename) for filename in past_images if ("/home/ethangomez/tentonone/" + filename) in all_women_images]
         if len(rated_women) > amt_unique:
             rated_women = rated_women[-amt_unique:]
 
         unrated_men = list(set(all_men_images) - set(rated_men))
         unrated_women = list(set(all_women_images) - set(rated_women))
+
+        #print(f"Rated men: {rated_men}")
+        #print(f"Rated women: {rated_women}")
+        #print(f"length of unrated men: {len(unrated_men)}")
+        #print(f"length of unrated women: {len(unrated_women)}")
     else:
+        #print("Session ID WAS NONE!!!!!!!!!!!!")
+        #print("NOT PRINTING RATED MEN / WOMEN")
         unrated_men = all_men_images
         unrated_women = all_women_images
 

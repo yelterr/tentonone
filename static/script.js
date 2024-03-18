@@ -155,6 +155,14 @@ function saveSelectedOption() {
 }
 
 window.onload = function () {
+    // Making sessionID if it doesn't exist yet.
+    if (sessionStorage.getItem("sessionID") != null && sessionStorage.getItem("sessionID") != "") {
+        ;
+    }
+    else {
+        sessionStorage.setItem('sessionID', generateRandomString(30));
+    }
+
     var currentPath = window.location.pathname;
     if (currentPath == "/leaderboard") {
         loadLeaderboard();

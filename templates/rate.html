@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="icon" type="image/vnd.microsoft.icon" href="/favicon.ico">
+    <meta name="description" content="Ten to None is a website where you can rate celebrities, streamers, YouTubers, and others on a scale of 0-10. Explore our leaderboard to compare celebrities' ratings and beauty. Rate people like Ryan Reynolds, Chris Hemsworth, Rihanna, Kai Cenat, and Joe Biden now!">
 
     <title>Rate People – Ten to None</title>
 
@@ -281,7 +282,7 @@
             width: 100%;
             box-sizing: border-box; /* Include padding in the width */
 
-            height: var(--slider-height);
+            /* height: var(--slider-height); */
 
             color: #5F2AD0;
             border-radius: 100px;
@@ -290,14 +291,16 @@
         /* Thumb */
         input[type='range']::-webkit-slider-thumb {
             -webkit-appearance: none;
-            margin-top: -2.5px;
+            /*margin-top: -2.5px; */
             box-shadow: -315px 0 0 300px #5F2AD0;
 
             border-radius: 100px;
-            border: 3px solid white;
+            border: 6px solid white;
 
-            width: var(--thumb-height);
-            height: var(--thumb-height);
+            /* width: var(--thumb-height);
+            height: var(--thumb-height); */
+            width: 25px;
+            height: 25px;
             cursor: ew-resize;
             background: #5F2AD0;
         }
@@ -339,7 +342,7 @@
             border-radius: 100px;
         }
         input[type="range"]:disabled::-ms-fill-lower {
-            height: var(--slider-height);
+            /*height: var(--slider-height); */
             background-color: gray;
             border-radius: 100px;
         }
@@ -349,11 +352,11 @@
             -webkit-appearance: none;
 
             border-radius: 100px;
-            border: 3px solid white;
+            border: 6px solid white;
             box-shadow: -315px 0 0 300px gray;
 
-            width: var(--thumb-height);
-            height: var(--thumb-height);
+            width: 25px;
+            height: 25px;
             cursor: ew-resize;
             background: gray;
         }
@@ -390,7 +393,7 @@
             </div>
 
             <div class="choices-div">
-                <input type="range" min="0" max="10" step="0.1" class="slider" id="rating_slider">
+                <input type="range" oninput="handleSliderInput(this)" min="0" max="10" step="0.1" class="slider" id="rating_slider">
                 <input class="num-input-box" type="text" id="textInput" oninput="validateInput(this)" onblur="clickOff(this)" value="5">
             </div>
 
@@ -437,9 +440,9 @@
         var textInput = document.getElementById("textInput");
         document.getElementById("final-number").innerText = slider.value;
 
-        slider.oninput = function() {
-            textInput.value = slider.value;
-            document.getElementById("final-number").innerText = slider.value;
+        function handleSliderInput(my_slider) {
+            textInput.value = my_slider.value;
+            document.getElementById("final-number").innerText = my_slider.value;
         }
 
         function validateInput(input) {
