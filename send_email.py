@@ -36,7 +36,7 @@ def send_email(form_data):
         server.login(smtp_username, smtp_password)
 
         # Send the email
-        server.sendmail(my_email, my_email, message.as_string())
+        server.sendmail(my_email, "tentonone@proton.me", message.as_string())
 
 # Testing the message
 #message = {"name" : "John Doe", "email" : "johndoe@yahoo.com", "message" : "I like your website!"}
