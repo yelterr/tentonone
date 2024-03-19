@@ -72,16 +72,23 @@ def send_rating():
     filename = extract_filepath(link)
 
     rating = float(data["slider_value"])
-    print(f"Slider value: {rating}")
-    sessionID = data["sessionID"]
-    if sessionID:
-        if len(sessionID) > 30:
-            sessionID = sessionID[:30]
+
+    try:
+        sessionID = data["sessionID"]
+        if sessionID:
+            if len(sessionID) > 30:
+                sessionID = sessionID[:30]
+    except:
+        sessionID = "erroredID"
 
     global db_connection
     db_connection = guarantee_db_connection(db_connection)
 
-    add_rating(db_connection, sessionID, filename, rating)
+    if rating > 10 or rating < 0:
+        pass
+    else:
+        add_rating(db_connection, sessionID, filename, rating)
+        
     rating_now = clean_num(get_current_rating(db_connection, filename))
     #rating_now = 5.5
 
@@ -212,6 +219,10 @@ def get_random_image(gender_choice, sessionID):
 # Cleans floats so that there are no unnecessary digits on the leaderboard
 def clean_num(num):
     to_clean = list(str(num))[::-1]
+
+    # Limit the length of num
+    if len(to_clean) > 7:
+        to_clean = to_clean[::-1][:7][::-1]
 
     if (num == 10):
         return 10
