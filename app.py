@@ -69,7 +69,7 @@ def send_rating():
     data = request.get_json()
 
     link = data["image_path"]
-    filename = extract_filepath(link)
+    filename = unquote(extract_filepath(link))
 
     rating = float(data["slider_value"])
 
