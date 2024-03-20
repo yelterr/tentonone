@@ -247,18 +247,22 @@ def get_filtered_lines():
     db_connection = guarantee_db_connection(db_connection)
 
     ratings = get_all_average_ratings(db_connection)
+    ratings = sorted(ratings, key=(lambda x : os.path.basename(x[0])))
+
+    names_and_sources = get_names(db_connection, ratings)
+    names_and_sources = sorted(names_and_sources, key=(lambda x : x[0]))
     #ratings = [(0, 0, 0, 0, 0, 0)]
-    ratings = sorted(ratings, key=(lambda x : x[2]))[::-1]
 
     for i, rating in enumerate(ratings):
         rating = list(rating)
         rating[2] = clean_num(rating[2])
-        name, source = get_name(rating[0])
+        _, name, source = names_and_sources[i]
         rating.append(name)
         rating.append(source)
         rating.append(determine_source_type(source))
         ratings[i] = tuple(rating)
 
+    ratings = sorted(ratings, key=(lambda x : x[2]))[::-1]
     return ratings
 
 def extract_filepath(filepath):
@@ -280,6 +284,24 @@ def get_name(impath):
 
     return name, source
 
+# Get ALL names and sources from names table in alphabetical order sadly
+def get_names(connection, ratings):
+    ratings = ratings
+    filenames = [os.path.basename(rating[0]) for rating in ratings]
+    q = "SELECT filename, name, source FROM names WHERE filename IN ("
+    placeholders = ','.join([f"\"{filename}\"" for filename in filenames])
+    q += placeholders + ")"
+
+    #q = """SELECT name, source FROM names WHERE filename IN ({}) ORDER BY FIELD(filename, {});""".format(','.join([f"\"{filename}\"" for filename in filenames]), ",".join(str(i) for i in range(len(filenames))))
+    #for index, filename in enumerate(filenames):
+        #q += "WHEN \"{}\" THEN {} ".format(filename, index)
+
+    #print(q)
+
+    names_and_sources = read_query(connection, q)
+    #print(names_and_sources)
+    return names_and_sources
+
 # Determines the type of the source so that I can link it correctly on the site.
 def determine_source_type(source):
     if source[0] == "<":
@@ -291,5 +313,3 @@ def determine_source_type(source):
 
 if __name__ == '__main__':
     app.run(host="127.0.0.1", port=8080, debug=True)
-    #print("Running!")
-    #print(get_random_image(gender_choice))
