@@ -8,7 +8,7 @@ from urllib.parse import unquote
 from datetime import datetime
 
 app = Flask(__name__)
-amt_unique = 150
+amt_unique = 200
 
 all_men_images = list(pathlib.Path("/home/ethangomez/tentonone/images").glob("men/*.jpg"))
 all_men_images = [str(filepath) for filepath in all_men_images]
