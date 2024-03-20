@@ -8,19 +8,18 @@ from urllib.parse import unquote
 from datetime import datetime
 
 app = Flask(__name__)
-amt_unique = 150
+amt_unique = 200
 
-all_men_images = list(pathlib.Path("images").glob("men/*.jpg"))
+all_men_images = list(pathlib.Path("/home/ethangomez/tentonone/images").glob("men/*.jpg"))
 all_men_images = [str(filepath) for filepath in all_men_images]
 
-all_women_images = list(pathlib.Path("images").glob("women/*.jpg"))
+all_women_images = list(pathlib.Path("/home/ethangomez/tentonone/images").glob("women/*.jpg"))
 all_women_images = [str(filepath) for filepath in all_women_images]
 
 db = "ethangomez$tentonone"
 db_connection = create_db_connection(credentials.host, credentials.username, credentials.passwd, db)
 db_connection = guarantee_db_connection(db_connection)
 
-# Loads the main menu
 @app.route('/')
 def index():
     return render_template('index.html')
@@ -58,7 +57,7 @@ def get_image():
 
     name, source = get_name(image_path)
     source_type = determine_source_type(source)
-    print(name)
+    #print(name)
 
     result = {"impath" : image_path, "name" : name, "source" : source, "source_type" : source_type}
 
@@ -70,19 +69,26 @@ def send_rating():
     data = request.get_json()
 
     link = data["image_path"]
-    filename = extract_filepath(link)
+    filename = unquote(extract_filepath(link))
 
     rating = float(data["slider_value"])
-    print(f"Slider value: {rating}")
-    sessionID = data["sessionID"]
-    if sessionID:
-        if len(sessionID) > 30:
-            sessionID = sessionID[:30]
+
+    try:
+        sessionID = data["sessionID"]
+        if sessionID:
+            if len(sessionID) > 30:
+                sessionID = sessionID[:30]
+    except:
+        sessionID = "erroredID"
 
     global db_connection
     db_connection = guarantee_db_connection(db_connection)
 
-    add_rating(db_connection, sessionID, filename, rating)
+    if rating > 10 or rating < 0:
+        pass
+    else:
+        add_rating(db_connection, sessionID, filename, rating)
+        
     rating_now = clean_num(get_current_rating(db_connection, filename))
     #rating_now = 5.5
 
@@ -214,6 +220,10 @@ def get_random_image(gender_choice, sessionID):
 def clean_num(num):
     to_clean = list(str(num))[::-1]
 
+    # Limit the length of num
+    if len(to_clean) > 7:
+        to_clean = to_clean[::-1][:7][::-1]
+
     if (num == 10):
         return 10
     
@@ -266,7 +276,7 @@ def get_name(impath):
     #results = (10, "John", 0, 0, 0, "yourmom.com")
     _, name, _, _, _, source = results
     name = unquote(name)
-    print("Getting name for...", name)
+    #print("Getting name for...", name)
 
     return name, source
 
